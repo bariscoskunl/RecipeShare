@@ -1,0 +1,6 @@
+@RecipeShare.DataApi_HostAddress = http://localhost:5288
+
+GET {{RecipeShare.DataApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

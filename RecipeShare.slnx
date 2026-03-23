@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="RecipeShare.Business/RecipeShare.Business.csproj" />
+  <Project Path="RecipeShare.Data/RecipeShare.Data.csproj" />
+  <Project Path="RecipeShare.DataApi/RecipeShare.DataApi.csproj" />
+  <Project Path="RecipeShare.Mvc/RecipeShare.Mvc.csproj" />
+</Solution>
