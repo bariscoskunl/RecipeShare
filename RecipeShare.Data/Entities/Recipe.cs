@@ -18,7 +18,7 @@ namespace RecipeShare.Data.Entities
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public ICollection<Comments> Comments { get; set; } = new HashSet<Comments>();
+        public ICollection<Comment> Comment { get; set; } = new HashSet<Comment>();
     }
     public class  RecipeConfiguration : IEntityTypeConfiguration<Recipe>
     {

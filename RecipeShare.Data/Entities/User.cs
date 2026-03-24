@@ -17,7 +17,7 @@ namespace RecipeShare.Data.Entities
 
 
         public ICollection<Recipe> Recipes { get; set; } = new HashSet<Recipe>();
-        public ICollection<Comments> Comments { get; set; } = new HashSet<Comments>();
+        public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
     }
     public class UserConfiguration : IEntityTypeConfiguration<User>
     { 

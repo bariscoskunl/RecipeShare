@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RecipeShare.Data.Entities
 {
-    public class Comments
+    public class Comment
     {
         public int Id { get; set; }
         public string Text { get; set; } = string.Empty;
@@ -23,8 +23,8 @@ namespace RecipeShare.Data.Entities
 
 
     }
-    public class  CommentsConfiguration : IEntityTypeConfiguration<Comments>
-    {        public void Configure(EntityTypeBuilder<Comments> builder)
+    public class  CommentsConfiguration : IEntityTypeConfiguration<Comment>
+    {        public void Configure(EntityTypeBuilder<Comment> builder)
         { 
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Text).IsRequired().HasMaxLength(500);
@@ -35,7 +35,7 @@ namespace RecipeShare.Data.Entities
                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(c => c.Recipe)
-               .WithMany(r => r.Comments) 
+               .WithMany(r => r.Comment) 
                .HasForeignKey(c => c.RecipeId)
                .OnDelete(DeleteBehavior.Cascade);
 

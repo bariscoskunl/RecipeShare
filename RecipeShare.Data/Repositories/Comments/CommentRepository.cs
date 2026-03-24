@@ -1,0 +1,48 @@
+﻿using Microsoft.EntityFrameworkCore;
+using RecipeShare.Data.Entities;
+
+namespace RecipeShare.Data.Repositories.Comments
+{
+    public class CommentRepository : ICommentRepository
+    {
+        private readonly DbContext _dbContext;
+
+        public CommentRepository(DbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task<IEnumerable<Comment>> GetAllComments(int recipeId)
+        {
+            return await _dbContext.Set<Comment>().Where(c => c.RecipeId == recipeId).ToListAsync();
+        }
+
+        public async Task<Comment?> GetCommentById(int id)
+        {
+            return await _dbContext.Set<Comment>().FindAsync(id);
+        }
+
+        public async Task CreateComment(Comment comment)
+        {
+            _dbContext.Set<Comment>().Add(comment);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateComment(Comment comment)
+        {
+            _dbContext.Entry(comment).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteComment(int id)
+        {
+            var comment = await _dbContext.Set<Comment>().FindAsync(id);
+            if (comment == null)
+            {
+                throw new InvalidOperationException($"Id'si {id} olan yorum bulunamadı.");
+            }
+            _dbContext.Set<Comment>().Remove(comment);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+}
