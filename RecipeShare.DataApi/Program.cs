@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddData(builder.Configuration.GetConnectionString("Default"));
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
