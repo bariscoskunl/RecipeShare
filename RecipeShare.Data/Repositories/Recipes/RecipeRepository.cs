@@ -21,7 +21,10 @@ namespace RecipeShare.Data.Repositories.Recipes
         {
             return await _dbContext.Set<Recipe>().Where(r => r.UserId == userId).ToListAsync();
         }
-
+        public async Task<Recipe?> GetRecipeById(int id)
+        {
+            return await _dbContext.Set<Recipe>().FindAsync(id);
+        }
         public async Task CreateRecipe(Recipe recipe)
         {
             _dbContext.Set<Recipe>().Add(recipe);

@@ -11,6 +11,7 @@ namespace RecipeShare.Data.Repositories.Recipes
     {
         Task<IEnumerable<Recipe>> GetAllRecipes();
         Task<IEnumerable<Recipe>> GetRecipesByUserId(int userId);
+        Task<Recipe?> GetRecipeById(int id);
         Task CreateRecipe(Recipe recipe);
         Task UpdateRecipe(Recipe recipe);
         Task DeleteRecipe(int id);

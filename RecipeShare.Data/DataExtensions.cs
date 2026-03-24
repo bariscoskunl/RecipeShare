@@ -17,7 +17,8 @@ namespace RecipeShare.Data
         {
             services.AddDbContext<DbContext, RecipeShareDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(connectionString,
+                b => b.MigrationsAssembly("RecipeShare.Data"));
             });
 
             services.AddScoped<IUserRepository, UserRepository>();
