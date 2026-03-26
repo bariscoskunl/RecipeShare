@@ -15,6 +15,8 @@ namespace RecipeShare.Data.Entities
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
 
+        public int RoleId { get; set; } 
+        public Role Role { get; set; } = null!; 
 
         public ICollection<Recipe> Recipes { get; set; } = new HashSet<Recipe>();
         public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
@@ -26,7 +28,11 @@ namespace RecipeShare.Data.Entities
             builder.HasKey(u => u.Id);
             builder.Property(u => u.Username).IsRequired().HasMaxLength(50);
             builder.Property(u => u.Email).IsRequired().HasMaxLength(100);
-            builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(255);            
+            builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(255);
+            builder.HasOne(u => u.Role)
+                   .WithMany(r => r.Users)
+                   .HasForeignKey(u => u.RoleId)
+                   .IsRequired();
         }
     }
 

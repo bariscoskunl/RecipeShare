@@ -20,12 +20,15 @@ namespace RecipeShare.Business.Services
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
         {
            var users =await _userRepository.GetAllUsers();
-            return users.Select(u => new UserDTO 
+            return users.Select(u => new UserDTO
             {
                 Id = u.Id,
                 Username = u.Username,
                 Email = u.Email,
-                PasswordHash = u.PasswordHash
+                PasswordHash = u.PasswordHash,
+                RoleId = u.RoleId,
+                RoleName = u.Role.Name,
+
             }).ToList();
         }
         public async Task<UserDTO?> GetUserByIdAsync(int id)
@@ -40,7 +43,9 @@ namespace RecipeShare.Business.Services
                 Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
-                PasswordHash = user.PasswordHash
+                PasswordHash = user.PasswordHash,
+                RoleId = user.RoleId,
+                RoleName = user.Role.Name
 
             };            
         }
@@ -50,7 +55,8 @@ namespace RecipeShare.Business.Services
             {               
                 Username = user.Username,
                 Email = user.Email,
-                PasswordHash = user.PasswordHash
+                PasswordHash = user.PasswordHash,
+                RoleId = 2
             };
             await _userRepository.CreateUser(newUser);
         }

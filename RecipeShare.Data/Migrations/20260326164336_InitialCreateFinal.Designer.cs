@@ -12,8 +12,8 @@ using RecipeShare.Data;
 namespace RecipeShare.Data.Migrations
 {
     [DbContext(typeof(RecipeShareDbContext))]
-    [Migration("20260324124247_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260326164336_InitialCreateFinal")]
+    partial class InitialCreateFinal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,7 +59,7 @@ namespace RecipeShare.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2026, 3, 24, 15, 42, 47, 83, DateTimeKind.Local).AddTicks(5822),
+                            CreatedDate = new DateTime(2026, 3, 26, 19, 43, 36, 171, DateTimeKind.Local).AddTicks(2235),
                             RecipeId = 1,
                             Text = "Harika bir tarif!",
                             UserId = 2
@@ -67,7 +67,7 @@ namespace RecipeShare.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2026, 3, 24, 15, 42, 47, 83, DateTimeKind.Local).AddTicks(5826),
+                            CreatedDate = new DateTime(2026, 3, 26, 19, 43, 36, 171, DateTimeKind.Local).AddTicks(2239),
                             RecipeId = 2,
                             Text = "Çok lezzetli görünüyor.",
                             UserId = 1
@@ -108,7 +108,7 @@ namespace RecipeShare.Data.Migrations
                         {
                             Id = 1,
                             Content = "Yumurtayı tavaya kırarak yapabilirsiniz.",
-                            CreatedDate = new DateTime(2026, 3, 24, 15, 42, 47, 83, DateTimeKind.Local).AddTicks(5781),
+                            CreatedDate = new DateTime(2026, 3, 26, 19, 43, 36, 171, DateTimeKind.Local).AddTicks(2198),
                             Title = "Sahanda Yumurta",
                             UserId = 1
                         },
@@ -116,9 +116,38 @@ namespace RecipeShare.Data.Migrations
                         {
                             Id = 2,
                             Content = "Mercimekleri haşlayıp blenderdan geçirin.",
-                            CreatedDate = new DateTime(2026, 3, 23, 15, 42, 47, 83, DateTimeKind.Local).AddTicks(5799),
+                            CreatedDate = new DateTime(2026, 3, 25, 19, 43, 36, 171, DateTimeKind.Local).AddTicks(2213),
                             Title = "Mercimek Çorbası",
                             UserId = 2
+                        });
+                });
+
+            modelBuilder.Entity("RecipeShare.Data.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "User"
                         });
                 });
 
@@ -140,12 +169,17 @@ namespace RecipeShare.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
 
@@ -155,6 +189,7 @@ namespace RecipeShare.Data.Migrations
                             Id = 1,
                             Email = "bariscoskun441@gmail.com",
                             PasswordHash = "1234",
+                            RoleId = 1,
                             Username = "bariscoskun"
                         },
                         new
@@ -162,7 +197,16 @@ namespace RecipeShare.Data.Migrations
                             Id = 2,
                             Email = "ali@mail.com",
                             PasswordHash = "abcd5678",
+                            RoleId = 2,
                             Username = "yazilimci_ali"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "doga@mail.com",
+                            PasswordHash = "efgh5678",
+                            RoleId = 1,
+                            Username = "doga_chef"
                         });
                 });
 
@@ -196,9 +240,25 @@ namespace RecipeShare.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RecipeShare.Data.Entities.User", b =>
+                {
+                    b.HasOne("RecipeShare.Data.Entities.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("RecipeShare.Data.Entities.Recipe", b =>
                 {
                     b.Navigation("Comment");
+                });
+
+            modelBuilder.Entity("RecipeShare.Data.Entities.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("RecipeShare.Data.Entities.User", b =>

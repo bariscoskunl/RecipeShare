@@ -14,12 +14,16 @@ namespace RecipeShare.Data.Repositories.Users
 
         public async Task<IEnumerable<User>> GetAllUsers()
         {
-            return await _dbContext.Set<User>().ToListAsync();
+            return await _dbContext.Set<User>()
+                .Include(u => u.Role) 
+                .ToListAsync();
         }
 
         public async Task<User?> GetUserById(int id)
         {
-            return await _dbContext.Set<User>().FindAsync(id);
+            return await _dbContext.Set<User>()
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task CreateUser(User user)

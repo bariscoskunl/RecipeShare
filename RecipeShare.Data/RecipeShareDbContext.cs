@@ -18,6 +18,7 @@ namespace RecipeShare.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,11 +26,17 @@ namespace RecipeShare.Data
             modelBuilder.ApplyConfiguration(new RecipeConfiguration());
             modelBuilder.ApplyConfiguration(new CommentsConfiguration());
 
+            List<Role> roles = new()
+            {
+                 new Role { Id = 1, Name = "Admin" },
+                 new Role { Id = 2, Name = "User" }
+            };
             // 1. Kullanıcılar
             List<User> users = new()
             {
-                 new User { Id = 1, Username = "bariscoskun", Email = "bariscoskun441@gmail.com", PasswordHash = "1234" },
-                 new User { Id = 2, Username = "yazilimci_ali", Email = "ali@mail.com", PasswordHash = "abcd5678" }
+                 new User { Id = 1, Username = "bariscoskun", Email = "bariscoskun441@gmail.com", PasswordHash = "1234", RoleId = 1 },
+                 new User { Id = 2, Username = "yazilimci_ali", Email = "ali@mail.com", PasswordHash = "abcd5678", RoleId = 2 },
+                 new User { Id = 3, Username = "doga_chef", Email = "doga@mail.com", PasswordHash = "efgh5678", RoleId = 1 }
             };
 
             // 2. Tarifler
@@ -48,6 +55,8 @@ namespace RecipeShare.Data
             modelBuilder.Entity<User>().HasData(users);
             modelBuilder.Entity<Recipe>().HasData(recipes);
             modelBuilder.Entity<Comment>().HasData(comments);
+            modelBuilder.Entity<Role>().HasData(roles);
+
         }
     }
 }
