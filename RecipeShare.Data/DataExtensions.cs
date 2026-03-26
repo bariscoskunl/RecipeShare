@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using RecipeShare.Data.Repositories.Comments;
 using RecipeShare.Data.Repositories.Recipes;
+using RecipeShare.Data.Repositories.Roles;
 using RecipeShare.Data.Repositories.Users;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace RecipeShare.Data
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
         }     
     }
 }
