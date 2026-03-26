@@ -1,3 +1,4 @@
+using RecipeShare.Business;
 using RecipeShare.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddData(builder.Configuration.GetConnectionString("Default"));
+
+builder.Services.AddBusinessServices();
 
 
 var app = builder.Build();

@@ -12,7 +12,14 @@ namespace RecipeShare.Data.Repositories.Comments
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Comment>> GetAllComments(int recipeId)
+        // Yeni eklenen: Tüm yorumları getirir
+        public async Task<IEnumerable<Comment>> GetAllCommentsAsync()
+        {
+            return await _dbContext.Set<Comment>().ToListAsync();
+        }
+
+        // İsmi güncellenen: Sadece ilgili tarifin yorumlarını getirir
+        public async Task<IEnumerable<Comment>> GetAllCommentsByRecipeAsync(int recipeId)
         {
             return await _dbContext.Set<Comment>().Where(c => c.RecipeId == recipeId).ToListAsync();
         }

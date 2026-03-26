@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RecipeShare.Business\RecipeShare.Business.csproj" />
     <ProjectReference Include="..\RecipeShare.Data\RecipeShare.Data.csproj" />
   </ItemGroup>

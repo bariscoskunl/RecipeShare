@@ -1,11 +1,6 @@
 ﻿using RecipeShare.Business.DTOs;
 using RecipeShare.Data.Entities;
 using RecipeShare.Data.Repositories.Comments;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecipeShare.Business.Services
 {
@@ -17,17 +12,32 @@ namespace RecipeShare.Business.Services
         {
             _commentRepository = commentRepository;
         }
-        public async Task<IEnumerable<CommentDTO>> GetAllCommentsAsync(int RecipeId)
+
+        public async Task<IEnumerable<CommentDTO>> GetAllCommentsAsync()
         {
-            var comments = await _commentRepository.GetAllComments(RecipeId);
+            // Veritabanındaki tüm yorumları çekip DTO'ya çeviriyoruz
+            var comments = await _commentRepository.GetAllCommentsAsync();
             return comments.Select(c => new CommentDTO
-            { 
+            {
                 Id = c.Id,
                 Text = c.Text,
-                UserId= c.UserId,
+                UserId = c.UserId,
                 RecipeId = c.RecipeId
             }).ToList();
         }
+
+        public async Task<IEnumerable<CommentDTO>> GetAllCommentsByRecipeAsync(int recipeId)
+        {
+            var comments = await _commentRepository.GetAllCommentsByRecipeAsync(recipeId);
+            return comments.Select(c => new CommentDTO
+            {
+                Id = c.Id,
+                Text = c.Text,
+                UserId = c.UserId,
+                RecipeId = c.RecipeId
+            }).ToList();
+        }
+
         public async Task<CommentDTO?> GetCommentByIdAsync(int id)
         {
             var comment = await _commentRepository.GetCommentById(id);
@@ -37,25 +47,27 @@ namespace RecipeShare.Business.Services
             }
             return new CommentDTO
             {
-              Id = comment.Id,
-              Text = comment.Text,
-              UserId = comment.UserId,
-              RecipeId = comment.RecipeId
+                Id = comment.Id,
+                Text = comment.Text,
+                UserId = comment.UserId,
+                RecipeId = comment.RecipeId
             };
         }
+
         public async Task CreateCommentAsync(CommentDTO comment)
         {
-           var newComment = new Comment
-                { 
-                    Text = comment.Text,
-                    UserId = comment.UserId,
-                    RecipeId = comment.RecipeId
-                };
+            var newComment = new Comment
+            {
+                Text = comment.Text,
+                UserId = comment.UserId,
+                RecipeId = comment.RecipeId
+            };
             await _commentRepository.CreateComment(newComment);
         }
-        public async Task UpdateCommentAsync(CommentDTO comment)
+
+        public async Task UpdateCommentAsync(int id, CommentDTO comment)
         {
-            var existingComment = await _commentRepository.GetCommentById(comment.Id);
+            var existingComment = await _commentRepository.GetCommentById(id);
             if (existingComment != null)
             {
                 existingComment.Text = comment.Text;
@@ -65,11 +77,12 @@ namespace RecipeShare.Business.Services
                 await _commentRepository.UpdateComment(existingComment);
             }
         }
+
         public async Task DeleteCommentAsync(int id)
         {
             var existingComment = await _commentRepository.GetCommentById(id);
             if (existingComment != null)
-            { 
+            {
                 await _commentRepository.DeleteComment(existingComment.Id);
             }
         }
