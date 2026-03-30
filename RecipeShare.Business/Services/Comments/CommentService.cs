@@ -2,7 +2,7 @@
 using RecipeShare.Data.Entities;
 using RecipeShare.Data.Repositories.Comments;
 
-namespace RecipeShare.Business.Services
+namespace RecipeShare.Business.Services.Comments
 {
     public class CommentService : ICommentService
     {

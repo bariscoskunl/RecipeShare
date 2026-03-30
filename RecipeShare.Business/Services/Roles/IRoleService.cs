@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecipeShare.Business.Services
+namespace RecipeShare.Business.Services.Roles
 {
     public interface IRoleService
     {

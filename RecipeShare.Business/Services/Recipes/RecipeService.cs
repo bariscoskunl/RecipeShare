@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecipeShare.Business.Services
+namespace RecipeShare.Business.Services.Recipes
 {
     public class RecipeService : IRecipeService
     {

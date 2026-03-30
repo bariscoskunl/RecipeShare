@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeShare.Business.DTOs;
-using RecipeShare.Business.Services;
+using RecipeShare.Business.Services.Users;
 
 namespace RecipeShare.DataApi.Controllers
 {

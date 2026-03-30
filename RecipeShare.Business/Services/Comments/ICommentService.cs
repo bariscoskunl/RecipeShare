@@ -1,6 +1,6 @@
 ﻿using RecipeShare.Business.DTOs;
 
-namespace RecipeShare.Business.Services
+namespace RecipeShare.Business.Services.Comments
 {
     public interface ICommentService
     {

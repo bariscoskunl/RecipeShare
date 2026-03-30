@@ -1,5 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RecipeShare.Business.Services;
+using RecipeShare.Business.Services.Auth;
+using RecipeShare.Business.Services.Comments;
+using RecipeShare.Business.Services.Recipes;
+using RecipeShare.Business.Services.Roles;
+using RecipeShare.Business.Services.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +20,7 @@ namespace RecipeShare.Business
             services.AddScoped<IRecipeService, RecipeService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ITokenService, TokenService>();      
         }
     }
 }

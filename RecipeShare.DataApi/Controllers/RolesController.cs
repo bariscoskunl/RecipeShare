@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RecipeShare.Business.Services;
+using RecipeShare.Business.Services.Roles;
 
 namespace RecipeShare.DataApi.Controllers
 {
