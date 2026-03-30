@@ -14,7 +14,9 @@ namespace RecipeShare.Data.Repositories.Recipes
 
         public async Task<IEnumerable<Recipe>> GetAllRecipes()
         {
-            return await _dbContext.Set<Recipe>().ToListAsync();
+            return await _dbContext.Set<Recipe>()
+                .Include(r => r.User) 
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Recipe>> GetRecipesByUserId(int userId)
@@ -23,7 +25,9 @@ namespace RecipeShare.Data.Repositories.Recipes
         }
         public async Task<Recipe?> GetRecipeById(int id)
         {
-            return await _dbContext.Set<Recipe>().FindAsync(id);
+            return await _dbContext.Set<Recipe>()
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
         public async Task CreateRecipe(Recipe recipe)
         {

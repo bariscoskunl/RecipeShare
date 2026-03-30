@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeShare.Business.DTOs;
 using RecipeShare.Business.Services.Recipes;
@@ -7,6 +8,7 @@ namespace RecipeShare.DataApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class RecipeController : ControllerBase
     {
         private readonly IRecipeService _recipeService;
@@ -18,14 +20,29 @@ namespace RecipeShare.DataApi.Controllers
 
         // GET: api/Recipe
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var recipes = await _recipeService.GetAllRecipesAsync();
             return Ok(recipes);
         }
+        // GET: api/Recipe/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            // DİKKAT: _recipeService içinde bu metodun (GetRecipeByIdAsync) yazılı olması lazım!
+            var recipe = await _recipeService.GetRecipeByIdAsync(id);
+
+            if (recipe == null)
+            {
+                return NotFound($"Id'si {id} olan tarif bulunamadı.");
+            }
+
+            return Ok(recipe);
+        }
 
         // GET: api/Recipe/user/5     
-        [HttpGet("user/{userId}")]
+        [HttpGet("user/{userId}")]       
         public async Task<IActionResult> GetByUserId(int userId)
         {
             var recipes = await _recipeService.GetRecipesByUserIdAsync(userId);

@@ -1,8 +1,59 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<RecipeViewModel>
+
+@{
+    ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container py-5">
+    <div class="row mb-5 text-center">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="display-4 font-weight-bold">Mutfak Keşifleri</h1>
+            <p class="lead text-muted">Barış'ın mutfağından en taze ve lezzetli tarifler burada.</p>
+            <hr class="w-25 mx-auto border-primary">
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var recipe in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 transition-hover">
+                        <img src="@recipe.ImageUrl" class="card-img-top rounded-top" alt="@recipe.Title">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-light text-primary border border-primary">Tarif</span>
+                                <small class="text-muted"><i class="far fa-calendar-alt me-1"></i>@recipe.FormattedDate</small>
+                            </div>
+                            <h5 class="card-title fw-bold">@recipe.Title</h5>
+                            <p class="card-text text-secondary">@recipe.ShortDescription</p>
+                        </div>
+                        <div class="card-footer bg-white border-0 pb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="user-info">
+                                    <small class="fw-bold text-dark">@recipe.AuthorName</small>
+                                </div>
+                                <a asp-action="Details"asp-controller="Recipe" asp-route-id="@recipe.Id"  class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                    Devamını Oku
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
 </div>
+
+<style>
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>

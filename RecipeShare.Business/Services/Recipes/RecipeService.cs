@@ -26,8 +26,30 @@ namespace RecipeShare.Business.Services.Recipes
                 Title = r.Title,
                 Content = r.Content,
                 CreatedDate = r.CreatedDate,
-                UserId = r.UserId
+                UserId = r.UserId,
+                Username = r.User != null ? r.User.Username : "Bilinmeyen Yazar"
             }).ToList();    
+        }
+
+        public async Task<RecipeDTO?> GetRecipeByIdAsync(int id)
+        {           
+            var recipe = await _recipeRepository.GetRecipeById(id);
+
+            if (recipe == null)
+            {
+                return null; 
+            }
+
+            return new RecipeDTO
+            {
+                Id = recipe.Id,
+                Title = recipe.Title,
+                Content = recipe.Content,
+                CreatedDate = recipe.CreatedDate,
+                UserId = recipe.UserId,
+                            
+                Username = recipe.User != null ? recipe.User.Username : "Bilinmeyen Yazar"
+            };
         }
         public async Task<IEnumerable<RecipeDTO>> GetRecipesByUserIdAsync(int userId)
         {
@@ -74,5 +96,7 @@ namespace RecipeShare.Business.Services.Recipes
                 await _recipeRepository.DeleteRecipe(id);
             }            
         }
+
+      
     }
 }

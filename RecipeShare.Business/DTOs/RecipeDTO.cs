@@ -13,5 +13,6 @@ namespace RecipeShare.Business.DTOs
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
         public int UserId { get; set; }
+        public string Username { get; set; } = string.Empty;
     }
 }

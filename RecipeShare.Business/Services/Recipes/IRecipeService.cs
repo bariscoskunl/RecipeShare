@@ -11,6 +11,7 @@ namespace RecipeShare.Business.Services.Recipes
     public interface IRecipeService
     {
         Task<IEnumerable<RecipeDTO>> GetAllRecipesAsync();
+        Task<RecipeDTO> GetRecipeByIdAsync(int id);
         Task<IEnumerable<RecipeDTO>> GetRecipesByUserIdAsync(int userId);
         Task CreateRecipeAsync(RecipeDTO recipe);
         Task UpdateRecipeAsync(RecipeDTO recipe);

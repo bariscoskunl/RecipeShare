@@ -1,0 +1,23 @@
+﻿namespace RecipeShare.Mvc.Models
+{
+    public class RecipeViewModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty; // API'den gelen asıl içerik
+        public string AuthorName { get; set; } = string.Empty;
+        public DateTime CreatedDate { get; set; }
+
+        // --- Detay İçin Eklenen "Akıllı" Özellikler ---
+
+        // İçeriğin sadece ilk 100 karakterini alıp sonuna ... ekler
+        public string ShortDescription => Content.Length > 100
+            ? Content.Substring(0, 100) + "..."
+            : Content;
+
+        public string FormattedDate => CreatedDate.ToString("dd MMM yyyy");
+
+        // Rastgele bir yemek görseli (Şimdilik test için, ilerde API'den gelir)
+        public string ImageUrl => $"https://picsum.photos/seed/{Id}/400/250";
+    }
+}

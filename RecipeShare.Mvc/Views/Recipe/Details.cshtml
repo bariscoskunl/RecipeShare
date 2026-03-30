@@ -1,0 +1,93 @@
+﻿@model RecipeShare.Mvc.Models.RecipeViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb bg-transparent p-0 m-0">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">@Model.Title</li>            
+                </ol>
+            </nav>
+
+            <div class="position-relative mb-4">
+                <img src="https://picsum.photos/seed/@Model.Id/1200/600" class="img-fluid rounded-4 shadow-sm w-100" alt="@Model.Title" style="object-fit: cover; max-height: 450px;">
+                <div class="position-absolute top-0 start-0 m-3">
+                    <span class="badge bg-primary bg-opacity-75 px-3 py-2 rounded-pill shadow-sm">Tarif Detayı</span>
+                </div>
+            </div>
+
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bolder text-dark mb-4">@Model.Title</h1>
+                
+                <div class="d-flex justify-content-center align-items-center text-muted gap-4 border-top border-bottom py-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-user-circle fs-4 me-2 text-primary"></i>
+                        <span class="fw-semibold">@Model.AuthorName</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-alt fs-5 me-2 text-secondary"></i>
+                        <span>@Model.FormattedDate</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-content-wrapper bg-white p-4 p-md-5 rounded-4 shadow-sm mb-5 border border-light">
+                <div class="recipe-content lead text-dark" style="line-height: 1.9; letter-spacing: 0.3px;">
+                    @Model.Content
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center border-top pt-4 mt-2">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 transition-hover">
+                    <i class="fas fa-arrow-left me-2"></i>Tariflere Dön
+                </a>
+                
+                <button id="shareButton" class="btn btn-primary rounded-pill px-4 py-2 transition-hover">
+                    <i class="fas fa-share-alt me-2"></i>Paylaş
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hover animasyonları */
+    .transition-hover {
+        transition: all 0.3s ease;
+    }
+    .transition-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }    
+
+</style>
+
+@section Scripts {
+<script>
+    document.getElementById('shareButton').addEventListener('click', async () => {     
+        const shareData = {
+            title: '@Model.Title | RecipeShare',
+            text: 'Harika bir tarif buldum: @Model.Title. Kesinlikle denemelisin!',
+            url: window.location.href
+        };
+
+        try {           
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {               
+                await navigator.clipboard.writeText(window.location.href);
+                alert('Tarif bağlantısı kopyalandı! İstediğin yere yapıştırabilirsin.');
+            }
+        } catch (err) {
+            console.error('Paylaşım sırasında bir hata oluştu:', err);
+        }
+    });
+</script>
+}

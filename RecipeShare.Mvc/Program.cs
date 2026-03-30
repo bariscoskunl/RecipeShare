@@ -1,7 +1,17 @@
+using RecipeShare.Mvc.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpClient("RecipeApi", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7190/api/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+builder.Services.AddScoped<RecipeClientService>();
 
 var app = builder.Build();
 

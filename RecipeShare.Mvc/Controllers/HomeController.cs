@@ -1,32 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
 using RecipeShare.Mvc.Models;
+using RecipeShare.Mvc.Services;
 using System.Diagnostics;
 
 namespace RecipeShare.Mvc.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly RecipeClientService _recipeClientService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(RecipeClientService recipeClientService)
         {
-            _logger = logger;
+            _recipeClientService = recipeClientService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            var recipeDtos = await _recipeClientService.GetAllRecipesAsync();
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+            var model = recipeDtos.Select(dto => new RecipeViewModel
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Content = dto.Content, 
+                CreatedDate = dto.CreatedDate,
+                AuthorName = dto.Username
+            }).OrderByDescending(r => r.CreatedDate).ToList(); 
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(model);
         }
     }
 }
