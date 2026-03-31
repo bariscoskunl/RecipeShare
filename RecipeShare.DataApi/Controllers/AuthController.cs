@@ -34,7 +34,8 @@ namespace RecipeShare.DataApi.Controllers
             {
                 Token = token,
                 UserName = user.Username,
-                Role = user.RoleName
+                Role = user.RoleName,
+                UserId = user.Id
             });
         }
 

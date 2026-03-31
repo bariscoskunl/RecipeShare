@@ -55,14 +55,22 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center border-top pt-4">
-            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 transition-hover fw-semibold">
+        <div class="d-flex justify-content-between align-items-center border-top pt-4 mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 transition-hover">
                 <i class="fas fa-arrow-left me-2"></i>Geri Dön
             </a>
-                
-            <button id="shareButton" class="btn btn-success rounded-pill px-4 py-2 transition-hover shadow-sm fw-bold">
-                <i class="fas fa-share-alt me-2"></i>Tarifi Paylaş
-            </button>
+
+            <div class="d-flex gap-2">
+                @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.AuthorName)
+                {
+                    <a asp-controller="Recipe" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning rounded-pill px-4 py-2 transition-hover fw-bold text-dark">
+                        <i class="fas fa-edit me-2"></i>Düzenle
+                    </a>
+                }
+                <button id="shareButton" class="btn btn-success rounded-pill px-4 py-2 transition-hover shadow-sm fw-bold">
+                    <i class="fas fa-share-alt me-2"></i>Paylaş
+                </button>
+            </div>
         </div>
 
     </div>

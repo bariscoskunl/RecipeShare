@@ -58,8 +58,9 @@ namespace RecipeShare.Mvc.Controllers
 
             var claims = jwtToken.Claims.ToList();
 
-            claims.Add(new Claim(ClaimTypes.Name, authData.UserName));
+            claims.Add(new Claim(ClaimTypes.Name, authData.UserName));            
             claims.Add(new Claim(ClaimTypes.Role, authData.Role));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, authData.UserId.ToString()));
 
             claims.Add(new Claim("JWToken", authData.Token));
 
@@ -98,6 +99,12 @@ namespace RecipeShare.Mvc.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

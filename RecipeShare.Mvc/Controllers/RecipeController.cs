@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RecipeShare.Business.DTOs;
 using RecipeShare.Mvc.Models;
 using RecipeShare.Mvc.Services;
+using System.Security.Claims;
 
 namespace RecipeShare.Mvc.Controllers
 {
@@ -74,6 +75,12 @@ namespace RecipeShare.Mvc.Controllers
             {
                 return NotFound();
             }
+
+            System.Diagnostics.Debug.WriteLine("---------------------------------------");
+            System.Diagnostics.Debug.WriteLine($"TARİF SAHİBİ ID (API'DEN GELEN): {dto.UserId}");
+            System.Diagnostics.Debug.WriteLine($"GİRİŞ YAPAN KULLANICI ID (MVC'DEN): {GetLoggedInUserId()}");
+            System.Diagnostics.Debug.WriteLine("---------------------------------------");
+
             if (dto.UserId != GetLoggedInUserId())
             {
                 return RedirectToAction("AccessDenied", "Account");
@@ -85,6 +92,7 @@ namespace RecipeShare.Mvc.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(RecipeDTO recipeDTO)
         {
+           
             recipeDTO.UserId = GetLoggedInUserId();
             if (!ModelState.IsValid)
             {
@@ -132,8 +140,13 @@ namespace RecipeShare.Mvc.Controllers
         }
         private int GetLoggedInUserId()
         {
-            // Giriş yapmış kullanıcının "NameIdentifier" claim'inden ID'sini çek
-            return int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0", out var userId) ? userId : 0;
+            // Kimlik kartındaki (Claims) NameIdentifier alanını bul
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+            { 
+                return userId;
+            }
+            return 0;// Hala 0 geliyorsa giriş yapılmamış veya Claim okunmamış demektir
         }
     }
 }
