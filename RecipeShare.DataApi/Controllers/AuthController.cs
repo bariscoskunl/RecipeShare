@@ -39,8 +39,33 @@ namespace RecipeShare.DataApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserDTO userDto)
-        {          
+        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDto)
+        {
+            var users = await _userService.GetAllUsersAsync();
+
+            var existingUser = users.FirstOrDefault(u => u.Email == registerDto.Email || u.Username == registerDto.Username);
+
+            if (existingUser != null)
+            {                
+                if (existingUser.Email == registerDto.Email)
+                {
+                    return BadRequest("Bu e-posta adresi zaten kullanımda.");
+                }
+                if (existingUser.Username == registerDto.Username)
+                {
+                    return BadRequest("Bu kullanıcı adı zaten alınmış. Lütfen başka bir tane dene.");
+                }
+            }
+
+
+            var userDto = new UserDTO
+            {
+                Username = registerDto.Username,
+                Email = registerDto.Email,
+                PasswordHash = registerDto.Password,
+                RoleId = 2 
+            };
+
             await _userService.CreateUserAsync(userDto);
             return Ok("Kayıt başarıyla tamamlandı.");
         }

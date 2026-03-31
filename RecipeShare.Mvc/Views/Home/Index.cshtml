@@ -7,9 +7,13 @@
 <div class="container py-5">
     <div class="row mb-5 text-center">
         <div class="col-lg-8 mx-auto">
-            <h1 class="display-4 font-weight-bold">Mutfak Keşifleri</h1>
-            <p class="lead text-muted">Barış'ın mutfağından en taze ve lezzetli tarifler burada.</p>
-            <hr class="w-25 mx-auto border-primary">
+            <h1 class="display-4 fw-bold text-dark">
+                <i class="fas fa-leaf text-success me-2"></i>Mutfak Keşifleri
+            </h1>
+            <p class="lead text-muted fst-italic">Barış'ın mutfağından en taze ve lezzetli tarifler burada.</p>
+            <div class="d-flex justify-content-center">
+                <hr class="w-25 border-success border-2 opacity-75">
+            </div>
         </div>
     </div>
 
@@ -19,23 +23,42 @@
             @foreach (var recipe in Model)
             {
                 <div class="col">
-                    <div class="card h-100 shadow-sm border-0 transition-hover">
-                        <img src="@recipe.ImageUrl" class="card-img-top rounded-top" alt="@recipe.Title">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-light text-primary border border-primary">Tarif</span>
-                                <small class="text-muted"><i class="far fa-calendar-alt me-1"></i>@recipe.FormattedDate</small>
+                    <div class="card h-100 shadow-sm border-0 transition-hover rounded-4">
+                        <div class="position-relative">
+                            <img src="@(string.IsNullOrEmpty(recipe.ImageUrl) ? "/images/default-recipe.jpg" : recipe.ImageUrl)"
+                                 class="card-img-top rounded-top-4" alt="@recipe.Title">
+                            <div class="position-absolute top-0 end-0 m-3">
+                                <span class="badge bg-success rounded-pill shadow-sm px-3 py-2">
+                                    <i class="fas fa-utensils me-1"></i> Tarif
+                                </span>
                             </div>
-                            <h5 class="card-title fw-bold">@recipe.Title</h5>
-                            <p class="card-text text-secondary">@recipe.ShortDescription</p>
                         </div>
-                        <div class="card-footer bg-white border-0 pb-3">
+
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-2 text-muted small">
+                                <i class="far fa-calendar-alt me-1 text-success"></i>
+                                <span>@recipe.FormattedDate</span>
+                            </div>
+                            
+                            <h5 class="card-title fw-bold text-dark mb-3">@recipe.Title</h5>
+                            
+                            <p class="card-text text-secondary mb-0" style="font-size: 0.9rem;">
+                                @recipe.ShortDescription
+                            </p>
+                        </div>
+
+                        <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                            <hr class="text-muted opacity-25">
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="user-info">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle bg-success-subtle text-success me-2">
+                                        <i class="fas fa-user-ninja"></i>
+                                    </div>
                                     <small class="fw-bold text-dark">@recipe.AuthorName</small>
                                 </div>
-                                <a asp-action="Details"asp-controller="Recipe" asp-route-id="@recipe.Id"  class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                    Devamını Oku
+                                <a asp-action="Details" asp-controller="Recipe" asp-route-id="@recipe.Id"
+                                       class="btn btn-success btn-sm rounded-pill px-4 shadow-sm fw-bold">
+                                    İncele <i class="fas fa-chevron-right ms-1" style="font-size: 0.7rem;"></i>
                                 </a>
                             </div>
                         </div>
@@ -43,17 +66,62 @@
                 </div>
             }
         }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-search text-muted mb-3" style="font-size: 3rem;"></i>
+                <h4 class="text-muted">Henüz hiç tarif eklenmemiş.</h4>
+                <p>İlk tarifi sen ekleyerek mutfağı şenlendirebilirsin!</p>
+                <a asp-controller="Recipe" asp-action="Create" class="btn btn-success rounded-pill px-4">Tarif Ekle</a>
+            </div>
+        }
     </div>
 </div>
 
 <style>
-    .transition-hover:hover {
-        transform: translateY(-5px);
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    /* Kart Hover Efekti */
+    .transition-hover {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        background-color: #ffffff;
     }
+
+        .transition-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(25, 135, 84, 0.15) !important;
+        }
+
+    /* Resim Yumuşatma */
     .card-img-top {
-        height: 200px;
+        height: 220px;
         object-fit: cover;
+    }
+
+    .rounded-top-4 {
+        border-top-left-radius: 1rem !important;
+        border-top-right-radius: 1rem !important;
+    }
+
+    .rounded-4 {
+        border-radius: 1rem !important;
+    }
+
+    /* Profil İkonu */
+    .avatar-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    /* Başlık HR Rengi (Bootstrap Success tonu) */
+    .border-success {
+        border-color: #198754 !important;
+    }
+
+    .bg-success-subtle {
+        background-color: #d1e7dd;
     }
 </style>

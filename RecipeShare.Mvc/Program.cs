@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using RecipeShare.Mvc.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,15 @@ builder.Services.AddHttpClient("RecipeApi", client =>
 
 builder.Services.AddScoped<RecipeClientService>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.Cookie.Name = "RecipeShare.Auth";
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +37,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

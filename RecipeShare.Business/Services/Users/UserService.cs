@@ -56,7 +56,7 @@ namespace RecipeShare.Business.Services.Users
                 Username = user.Username,
                 Email = user.Email,
                 PasswordHash = user.PasswordHash,
-                RoleId = 2
+                RoleId = user.RoleId
             };
             await _userRepository.CreateUser(newUser);
         }

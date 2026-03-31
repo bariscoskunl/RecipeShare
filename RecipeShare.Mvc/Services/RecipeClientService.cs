@@ -14,7 +14,7 @@ namespace RecipeShare.Mvc.Services
 
         public async Task<List<RecipeDTO>> GetAllRecipesAsync()
         {
-            try 
+            try
             {
                 var response = await _httpClient.GetAsync("Recipe");
 
@@ -35,15 +35,48 @@ namespace RecipeShare.Mvc.Services
         }
 
         public async Task<RecipeDTO?> GetRecipeByIdAsync(int id)
-        { 
+        {
             var response = await _httpClient.GetAsync($"Recipe/{id}");
             if (!response.IsSuccessStatusCode)
-            {               
+            {
                 Debug.WriteLine($"API Hatası: {response.StatusCode}");
                 return null;
             }
 
             return await response.Content.ReadFromJsonAsync<RecipeDTO>();
+        }
+
+        public async Task<bool> CreateRecipeAsync(RecipeDTO recipeDTO)
+        {
+            var response = await _httpClient.PostAsJsonAsync("Recipe", recipeDTO); // API'ye POST isteği gönder
+            if (!response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine($"API Hatası: {response.StatusCode}");
+                return false;
+            }
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateAsync(RecipeDTO recipeDTO)
+        {
+            var response = await _httpClient.PutAsJsonAsync("Recipe", recipeDTO); // API'ye PUT isteği gönder
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine($"API Hatası: {response.StatusCode}");
+                return false;
+            }            
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"Recipe/{id}"); // API'ye DELETE isteği gönder
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
