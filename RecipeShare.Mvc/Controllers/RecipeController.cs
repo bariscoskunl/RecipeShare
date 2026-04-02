@@ -53,6 +53,11 @@ namespace RecipeShare.Mvc.Controllers
         {
             recipeDTO.UserId = GetLoggedInUserId();
 
+            if (!ModelState.IsValid)
+            {
+                return View(recipeDTO);
+            }
+
             if (recipeDTO.ImageFile != null && recipeDTO.ImageFile.Length > 0)
             {
                 recipeDTO.ImageUrl = await UploadImageAsync(recipeDTO.ImageFile);
@@ -61,11 +66,7 @@ namespace RecipeShare.Mvc.Controllers
             {
                 recipeDTO.ImageUrl = "/images/default-recipe.jpg";
             }
-
-            if (!ModelState.IsValid)
-            {
-                return View(recipeDTO);
-            }
+            
             bool isSuccess = await _recipeClientService.CreateRecipeAsync(recipeDTO);
 
             if (isSuccess)
@@ -162,6 +163,11 @@ namespace RecipeShare.Mvc.Controllers
         }
         private async Task<string> UploadImageAsync(IFormFile imageFile)
         {
+            if (string.IsNullOrEmpty(_webHostEnvironment.WebRootPath))
+            {
+                return "/images/default-recipe.jpg";
+            }
+
             // Dosya adını benzersiz yap
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
 
