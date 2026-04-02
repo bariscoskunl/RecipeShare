@@ -49,6 +49,8 @@ namespace RecipeShare.Mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [DisableRequestSizeLimit]
+        [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
         public async Task<IActionResult> Create(RecipeDTO recipeDTO)
         {
             recipeDTO.UserId = GetLoggedInUserId();
@@ -67,17 +69,25 @@ namespace RecipeShare.Mvc.Controllers
                 recipeDTO.ImageUrl = "/uploads/recipes/default-recipe.jpg";
             }
 
-            bool isSuccess = await _recipeClientService.CreateRecipeAsync(recipeDTO);
+            recipeDTO.ImageFile = null;
 
-            if (isSuccess)
+            try
             {
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
+                bool isSuccess = await _recipeClientService.CreateRecipeAsync(recipeDTO);
+
+                if (isSuccess)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
                 ModelState.AddModelError(string.Empty, "Tarif eklenirken API ile iletişim kurulamadı.");
-                return View(recipeDTO);
             }
+            catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "Tarif eklenirken bir hata oluştu. Lütfen tekrar deneyin.");
+            }
+
+            return View(recipeDTO);
         }
 
         [HttpGet]
@@ -99,28 +109,39 @@ namespace RecipeShare.Mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [DisableRequestSizeLimit]
+        [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
         public async Task<IActionResult> Edit(RecipeDTO recipeDTO)
         {
-           
             recipeDTO.UserId = GetLoggedInUserId();
             if (recipeDTO.ImageFile != null && recipeDTO.ImageFile.Length > 0)
             {
                 recipeDTO.ImageUrl = await UploadImageAsync(recipeDTO.ImageFile);
             }
+
+            recipeDTO.ImageFile = null;
+
             if (!ModelState.IsValid)
             {
                 return View(recipeDTO);
             }
-            bool isSuccess = await _recipeClientService.UpdateAsync(recipeDTO);
-            if (isSuccess)
+
+            try
             {
-                return RedirectToAction("Details", new { id = recipeDTO.Id });
-            }
-            else
-            {
+                bool isSuccess = await _recipeClientService.UpdateAsync(recipeDTO);
+                if (isSuccess)
+                {
+                    return RedirectToAction("Details", new { id = recipeDTO.Id });
+                }
+
                 ModelState.AddModelError(string.Empty, "Tarif güncellenirken API ile iletişim kurulamadı.");
-                return View(recipeDTO);
             }
+            catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "Tarif güncellenirken bir hata oluştu. Lütfen tekrar deneyin.");
+            }
+
+            return View(recipeDTO);
         }
 
         [HttpPost]
