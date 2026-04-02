@@ -1,4 +1,5 @@
-﻿using RecipeShare.Business.DTOs;
+﻿using Azure;
+using RecipeShare.Business.DTOs;
 using System.Diagnostics;
 
 namespace RecipeShare.Mvc.Services
@@ -38,50 +39,82 @@ namespace RecipeShare.Mvc.Services
 
         public async Task<RecipeDTO?> GetRecipeByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"Recipe/{id}");
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                Debug.WriteLine($"API Hatası: {response.StatusCode}");
+                var response = await _httpClient.GetAsync($"Recipe/{id}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"API Hatası: {response.StatusCode}");
+                    return null;
+                }
+                return await response.Content.ReadFromJsonAsync<RecipeDTO>();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"API Bağlantı Hatası: {ex.Message}");
                 return null;
             }
-
-            return await response.Content.ReadFromJsonAsync<RecipeDTO>();
         }
 
         public async Task<bool> CreateRecipeAsync(RecipeDTO recipeDTO)
         {
-            AttachAuthToken();
-            var response = await _httpClient.PostAsJsonAsync("Recipe", recipeDTO); // API'ye POST isteği gönder
-            if (!response.IsSuccessStatusCode)
-            {
-                Debug.WriteLine($"API Hatası: {response.StatusCode}");
-                return false;
+            try
+            {               
+                AttachAuthToken();
+                var response = await _httpClient.PostAsJsonAsync("Recipe", recipeDTO);
+                if (!response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"API Hatası: {response.StatusCode}");
+                    return false;
+                }
+                return true;
             }
-            return response.IsSuccessStatusCode;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"API Bağlantı Hatası: {ex.Message}");
+                return false;
+            }            
         }
 
         public async Task<bool> UpdateAsync(RecipeDTO recipeDTO)
         {
-            AttachAuthToken();
-            var response = await _httpClient.PutAsJsonAsync("Recipe", recipeDTO); // API'ye PUT isteği gönder
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                Debug.WriteLine($"API Hatası: {response.StatusCode}");
+                AttachAuthToken();
+                var response = await _httpClient.PutAsJsonAsync("Recipe", recipeDTO);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"API Hatası: {response.StatusCode}");
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+              
+                Debug.WriteLine($"API Bağlantı Hatası: {ex.Message}");
                 return false;
-            }            
-            return response.IsSuccessStatusCode;
+            }
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            AttachAuthToken();
-            var response = await _httpClient.DeleteAsync($"Recipe/{id}"); // API'ye DELETE isteği gönder
-            if (!response.IsSuccessStatusCode)
+            try
             {
+                AttachAuthToken();
+                var response = await _httpClient.DeleteAsync($"Recipe/{id}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"API Bağlantı Hatası: {ex.Message}");
                 return false;
             }
-            return true;
         }
 
         private void AttachAuthToken()

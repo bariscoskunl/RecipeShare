@@ -79,6 +79,10 @@ namespace RecipeShare.Mvc.Controllers
                 {
                     return RedirectToAction("Index", "Home");
                 }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Tarif eklenirken bir hata oluştu. Lütfen tekrar deneyin.");
+                }
             }
             catch (Exception)
             {

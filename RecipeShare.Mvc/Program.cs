@@ -6,11 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddHttpClient("RecipeApi", client =>
-{
+var httpClientBuilder = builder.Services.AddHttpClient("RecipeApi", client => {
     client.BaseAddress = new Uri("https://localhost:7190/api/");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
-});
+    client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+   {
+       ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+   });
 
 builder.Services.AddScoped<RecipeClientService>();
 builder.Services.AddHttpContextAccessor();
