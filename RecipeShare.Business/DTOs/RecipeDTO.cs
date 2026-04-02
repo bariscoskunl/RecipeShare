@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace RecipeShare.Business.DTOs
@@ -12,7 +14,12 @@ namespace RecipeShare.Business.DTOs
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
+        public string? ImageUrl { get; set; }
+
+        [JsonIgnore]
+        public IFormFile? ImageFile { get; set; }
         public int UserId { get; set; }
         public string Username { get; set; } = string.Empty;
+
     }
 }

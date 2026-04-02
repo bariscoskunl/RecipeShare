@@ -14,6 +14,7 @@ namespace RecipeShare.Data.Entities
         public string Title { get; set; } 
         public string Content { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string? ImageUrl { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; }
@@ -28,6 +29,7 @@ namespace RecipeShare.Data.Entities
             builder.Property(r => r.Title).IsRequired().HasMaxLength(200);
             builder.Property(r => r.Content).IsRequired();
             builder.Property(r => r.CreatedDate).IsRequired();
+            builder.Property(r => r.ImageUrl).HasMaxLength(500);
             builder.HasOne(r => r.User)
                 .WithMany(u => u.Recipes)
                 .HasForeignKey(r => r.UserId);

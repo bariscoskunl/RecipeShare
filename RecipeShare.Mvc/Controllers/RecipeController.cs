@@ -10,10 +10,12 @@ namespace RecipeShare.Mvc.Controllers
     public class RecipeController : Controller
     {
         private readonly RecipeClientService _recipeClientService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public RecipeController(RecipeClientService recipeClientService)
+        public RecipeController(RecipeClientService recipeClientService, IWebHostEnvironment webHostEnvironment)
         {
             _recipeClientService = recipeClientService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Details(int id)
@@ -31,7 +33,8 @@ namespace RecipeShare.Mvc.Controllers
                 Title = dto.Title,
                 Content = dto.Content,
                 CreatedDate = dto.CreatedDate,
-                AuthorName = dto.Username
+                AuthorName = dto.Username ?? "Bilinmeyen Yazar",
+                ImageUrl = string.IsNullOrEmpty(dto.ImageUrl) ? "/images/default-recipe.jpg" : dto.ImageUrl
             };
 
             return View(model);
@@ -49,6 +52,16 @@ namespace RecipeShare.Mvc.Controllers
         public async Task<IActionResult> Create(RecipeDTO recipeDTO)
         {
             recipeDTO.UserId = GetLoggedInUserId();
+
+            if (recipeDTO.ImageFile != null && recipeDTO.ImageFile.Length > 0)
+            {
+                recipeDTO.ImageUrl = await UploadImageAsync(recipeDTO.ImageFile);
+            }
+            else
+            {
+                recipeDTO.ImageUrl = "/images/default-recipe.jpg";
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(recipeDTO);
@@ -76,11 +89,6 @@ namespace RecipeShare.Mvc.Controllers
                 return NotFound();
             }
 
-            System.Diagnostics.Debug.WriteLine("---------------------------------------");
-            System.Diagnostics.Debug.WriteLine($"TARİF SAHİBİ ID (API'DEN GELEN): {dto.UserId}");
-            System.Diagnostics.Debug.WriteLine($"GİRİŞ YAPAN KULLANICI ID (MVC'DEN): {GetLoggedInUserId()}");
-            System.Diagnostics.Debug.WriteLine("---------------------------------------");
-
             if (dto.UserId != GetLoggedInUserId())
             {
                 return RedirectToAction("AccessDenied", "Account");
@@ -94,6 +102,10 @@ namespace RecipeShare.Mvc.Controllers
         {
            
             recipeDTO.UserId = GetLoggedInUserId();
+            if (recipeDTO.ImageFile != null && recipeDTO.ImageFile.Length > 0)
+            {
+                recipeDTO.ImageUrl = await UploadImageAsync(recipeDTO.ImageFile);
+            }
             if (!ModelState.IsValid)
             {
                 return View(recipeDTO);
@@ -147,6 +159,28 @@ namespace RecipeShare.Mvc.Controllers
                 return userId;
             }
             return 0;// Hala 0 geliyorsa giriş yapılmamış veya Claim okunmamış demektir
+        }
+        private async Task<string> UploadImageAsync(IFormFile imageFile)
+        {
+            // Dosya adını benzersiz yap
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+
+            // Klasör: wwwroot/uploads/recipes
+            string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "recipes");
+
+            if (!Directory.Exists(uploadDir))
+            {
+                Directory.CreateDirectory(uploadDir);
+            }
+
+            string filePath = Path.Combine(uploadDir, fileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+
+            return "/uploads/recipes/" + fileName;
         }
     }
 }

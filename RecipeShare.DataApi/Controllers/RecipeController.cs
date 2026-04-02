@@ -8,7 +8,7 @@ namespace RecipeShare.DataApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class RecipeController : ControllerBase
     {
         private readonly IRecipeService _recipeService;
@@ -29,8 +29,7 @@ namespace RecipeShare.DataApi.Controllers
         // GET: api/Recipe/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
-        {
-            // DİKKAT: _recipeService içinde bu metodun (GetRecipeByIdAsync) yazılı olması lazım!
+        {            
             var recipe = await _recipeService.GetRecipeByIdAsync(id);
 
             if (recipe == null)
@@ -58,7 +57,8 @@ namespace RecipeShare.DataApi.Controllers
         public async Task<IActionResult> Create(RecipeDTO recipeDTO)
         {
             await _recipeService.CreateRecipeAsync(recipeDTO);
-            return Ok(recipeDTO);
+            //Ok(recipeDTO);
+            return CreatedAtAction(nameof(GetById), new { id = recipeDTO.Id }, recipeDTO);
         }
 
         [HttpPut]

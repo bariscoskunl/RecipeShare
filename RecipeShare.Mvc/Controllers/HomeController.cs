@@ -24,7 +24,8 @@ namespace RecipeShare.Mvc.Controllers
                 Title = dto.Title,
                 Content = dto.Content, 
                 CreatedDate = dto.CreatedDate,
-                AuthorName = dto.Username
+                AuthorName = dto.Username,
+                ImageUrl = string.IsNullOrEmpty(dto.ImageUrl) ? "/images/default-recipe.jpg" : dto.ImageUrl
             }).OrderByDescending(r => r.CreatedDate).ToList(); 
 
             return View(model);

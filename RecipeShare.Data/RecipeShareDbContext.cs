@@ -43,11 +43,11 @@ namespace RecipeShare.Data
             // 3. Tarifler
             List<Recipe> recipes = new()
             {
-                 new Recipe { Id = 1, Title = "Sahanda Yumurta", Content = "Tereyağını eritin, yumurtaları kırın ve 2 dakika pişirin.", CreatedDate = DateTime.Now.AddDays(-5), UserId = 1 },
-                 new Recipe { Id = 2, Title = "Mercimek Çorbası", Content = "Mercimek, soğan ve havucu haşlayıp blenderdan geçirin.", CreatedDate = DateTime.Now.AddDays(-4), UserId = 2 },
-                 new Recipe { Id = 3, Title = "İtalyan Usulü Pizza", Content = "İnce hamur üzerine bol mozzarella ve taze fesleğen ekleyin.", CreatedDate = DateTime.Now.AddDays(-3), UserId = 3 },
-                 new Recipe { Id = 4, Title = "Ev Yapımı Burger", Content = "Dana döş etinden hazırladığınız köfteleri döküm tavada mühürleyin.", CreatedDate = DateTime.Now.AddDays(-2), UserId = 1 },
-                 new Recipe { Id = 5, Title = "Zeytinyağlı Enginar", Content = "Garnitürlerle birlikte kısık ateşte pişirerek servis yapın.", CreatedDate = DateTime.Now.AddDays(-1), UserId = 4 }
+                 new Recipe { Id = 1, Title = "Sahanda Yumurta", Content = "...", CreatedDate = DateTime.Now.AddDays(-5), UserId = 1, ImageUrl = "/images/default-recipe.jpg" },
+                 new Recipe { Id = 2, Title = "Mercimek Çorbası", Content = "...", CreatedDate = DateTime.Now.AddDays(-4), UserId = 2, ImageUrl = "/images/default-recipe.jpg" },
+                 new Recipe { Id = 3, Title = "İtalyan Usulü Pizza", Content = "...", CreatedDate = DateTime.Now.AddDays(-3), UserId = 3, ImageUrl = "/images/default-recipe.jpg" },
+                 new Recipe { Id = 4, Title = "Ev Yapımı Burger", Content = "...", CreatedDate = DateTime.Now.AddDays(-2), UserId = 1, ImageUrl = "/images/default-recipe.jpg" },
+                 new Recipe { Id = 5, Title = "Zeytinyağlı Enginar", Content = "...", CreatedDate = DateTime.Now.AddDays(-1), UserId = 4, ImageUrl = "/images/default-recipe.jpg" }
             };
 
             // 4. Yorumlar

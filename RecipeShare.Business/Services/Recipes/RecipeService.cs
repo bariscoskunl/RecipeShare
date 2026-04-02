@@ -26,6 +26,7 @@ namespace RecipeShare.Business.Services.Recipes
                 Title = r.Title,
                 Content = r.Content,
                 CreatedDate = r.CreatedDate,
+                ImageUrl = r.ImageUrl, 
                 UserId = r.UserId,
                 Username = r.User != null ? r.User.Username : "Bilinmeyen Yazar"
             }).ToList();    
@@ -46,8 +47,8 @@ namespace RecipeShare.Business.Services.Recipes
                 Title = recipe.Title,
                 Content = recipe.Content,
                 CreatedDate = recipe.CreatedDate,
+                ImageUrl = recipe.ImageUrl,
                 UserId = recipe.UserId,
-                            
                 Username = recipe.User != null ? recipe.User.Username : "Bilinmeyen Yazar"
             };
         }
@@ -60,6 +61,7 @@ namespace RecipeShare.Business.Services.Recipes
                 Title = r.Title,
                 Content = r.Content,
                 CreatedDate = r.CreatedDate,
+                ImageUrl = r.ImageUrl,
                 UserId = r.UserId
             }).ToList();
         }
@@ -70,7 +72,8 @@ namespace RecipeShare.Business.Services.Recipes
                 Title = recipe.Title,
                 Content = recipe.Content,
                 CreatedDate = DateTime.Now,
-                UserId = recipe.UserId
+                UserId = recipe.UserId,
+                ImageUrl = recipe.ImageUrl ?? "/images/default-recipe.jpg"
             };
             await _recipeRepository.CreateRecipe(newRecipe);
         }
@@ -83,6 +86,7 @@ namespace RecipeShare.Business.Services.Recipes
                 existingRecipe.Title = recipe.Title;
                 existingRecipe.Content = recipe.Content;
                 existingRecipe.UserId = recipe.UserId;
+                existingRecipe.ImageUrl = recipe.ImageUrl;
 
                 await _recipeRepository.UpdateRecipe(existingRecipe);
 

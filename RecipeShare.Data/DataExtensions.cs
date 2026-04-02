@@ -16,11 +16,13 @@ namespace RecipeShare.Data
     {
         public static void AddData(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<DbContext, RecipeShareDbContext>(options =>
+            services.AddDbContext<RecipeShareDbContext>(options =>
             {
                 options.UseSqlServer(connectionString,
-                b => b.MigrationsAssembly("RecipeShare.Data"));
+                    b => b.MigrationsAssembly("RecipeShare.Data"));
             });
+
+            services.AddScoped<DbContext>(sp => sp.GetRequiredService<RecipeShareDbContext>());
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();

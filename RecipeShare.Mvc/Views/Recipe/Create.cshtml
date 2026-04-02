@@ -14,7 +14,7 @@
         </div>
         <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
             <div class="card-body p-4 p-md-5">
-                <form asp-action="Create" method="post">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <div class="mb-4">
@@ -32,14 +32,14 @@
                                   rows="10" placeholder="Malzemeleri ve yapım aşamalarını detaylıca yazın..."></textarea>
                         <span asp-validation-for="Content" class="text-danger small ms-1"></span>
                     </div>
-                    <div class="mb-5">
-                        <label class="form-label fw-bold text-dark">Görsel Bağlantısı (URL)</label>
-                        <div class="input-group shadow-sm rounded-3 overflow-hidden">
-                            <span class="input-group-text bg-white border-0"><i class="fas fa-image text-success"></i></span>
-                            <input name="ImageUrl" class="form-control border-0 bg-light py-3" placeholder="https://resim-adresi.com/tarif.jpg" />
-                        </div>
-                        <small class="text-muted ms-1 mt-1 d-block italic">Resim eklemezseniz sistem otomatik bir görsel atayacaktır.</small>
-                    </div>
+                   <div class="mb-5">
+                    <label class="form-label fw-bold text-dark">Tarif Fotoğrafı Seç</label>
+                     <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                        <span class="input-group-text bg-white border-0"><i class="fas fa-camera text-success"></i></span>
+                        <input type="file" name="ImageFile" class="form-control border-0 bg-light py-3" accept="image/*" />
+                     </div>
+                        <small class="text-muted ms-1 mt-1 d-block italic">Kendi hazırladığın lezzetin fotoğrafını yükle!</small>
+                      </div>
 
                     <div class="row g-3">
                         <div class="col-md-6">

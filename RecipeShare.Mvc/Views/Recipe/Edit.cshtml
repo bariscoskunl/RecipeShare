@@ -1,11 +1,10 @@
-﻿
-@model RecipeShare.Business.DTOs.RecipeDTO
+﻿@model RecipeShare.Business.DTOs.RecipeDTO
 
 @{
     ViewData["Title"] = "Tarifi Düzenle";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mt-4">
     <div class="col-lg-8">
         
         <nav aria-label="breadcrumb" class="mb-4">
@@ -19,42 +18,65 @@
             <h2 class="fw-bold text-success">
                 <i class="fas fa-edit me-2"></i>Tarifi Güncelle
             </h2>
-            <p class="text-muted">"@Model.Title" tarifinde ufak dokunuşlar yapalım.</p>
+            <p class="text-muted">"@Model.Title" tarifini mükemmelleştirelim.</p>
         </div>
 
         <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
             <div class="card-body p-4 p-md-5">
-                <form asp-action="Edit" method="post">
+                
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 small"></div>
 
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="UserId" />
+                    <input type="hidden" asp-for="CreatedDate" />                  
+                    <input type="hidden" asp-for="ImageUrl" />
+
+                    <div class="mb-4 text-center">
+                        <label class="d-block text-muted small fw-bold mb-2">Şu Anki Fotoğraf</label>
+                        <div class="position-relative d-inline-block">
+                            <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/default-recipe.jpg" : Model.ImageUrl)" 
+                                 class="rounded-4 shadow-sm border" 
+                                 style="max-height: 200px; width: auto; object-fit: cover;" 
+                                 alt="Mevcut Tarif Görseli">
+                        </div>
+                    </div>
 
                     <div class="mb-4">
                         <label asp-for="Title" class="form-label fw-bold text-dark">Tarif Adı</label>
                         <div class="input-group shadow-sm rounded-3 overflow-hidden">
                             <span class="input-group-text bg-white border-0"><i class="fas fa-utensils text-success"></i></span>
-                            <input asp-for="Title" class="form-control border-0 bg-light py-3" />
+                            <input asp-for="Title" class="form-control border-0 bg-light py-3" placeholder="Tarif başlığı..." />
                         </div>
                         <span asp-validation-for="Title" class="text-danger small ms-1"></span>
                     </div>
 
                     <div class="mb-4">
+                        <label class="form-label fw-bold text-dark">Fotoğrafı Değiştir (Opsiyonel)</label>
+                        <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                            <span class="input-group-text bg-white border-0"><i class="fas fa-camera text-warning"></i></span>
+                            <input type="file" name="ImageFile" class="form-control border-0 bg-light py-3" accept="image/*" />
+                        </div>
+                        <small class="text-muted small italic ms-1">Resmi değiştirmek istemiyorsanız burayı boş bırakın.</small>
+                    </div>
+
+                    <div class="mb-4">
                         <label asp-for="Content" class="form-label fw-bold text-dark">Hazırlanışı ve Malzemeler</label>
                         <textarea asp-for="Content" class="form-control border-0 bg-light shadow-sm rounded-3 py-3" 
-                                  rows="10"></textarea>
+                                  rows="10" placeholder="Tarif detaylarını buraya yazın..."></textarea>
                         <span asp-validation-for="Content" class="text-danger small ms-1"></span>
                     </div>
 
                     <div class="row g-3 mt-2">
                         <div class="col-md-6">
                             <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary w-100 py-3 rounded-pill fw-bold transition-hover">
-                                <i class="fas fa-arrow-left me-2"></i>Değişiklikleri İptal Et
+                                <i class="fas fa-times me-2"></i>Değişiklikleri İptal Et
                             </a>
                         </div>
                         <div class="col-md-6">
                             <button type="submit" class="btn btn-success w-100 py-3 rounded-pill fw-bold shadow transition-hover">
-                                <i class="fas fa-check-circle me-2"></i>Güncelleştirmeleri Kaydet
+                                <i class="fas fa-save me-2"></i>Güncellemeleri Kaydet
                             </button>
                         </div>
                     </div>
@@ -72,10 +94,10 @@
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
-    /* Input Focus Efekti */
     .form-control:focus {
         background-color: #fff !important;
         box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15) !important;
         border: 1px solid #198754 !important;
     }
+    .italic { font-style: italic; }
 </style>
