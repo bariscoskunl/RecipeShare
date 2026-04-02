@@ -1,15 +1,29 @@
 ﻿using RecipeShare.Business.DTOs;
 using System.Diagnostics;
+using System.Net.Http.Headers;
+using System.Security.Claims;
 
 namespace RecipeShare.Mvc.Services
 {
     public class RecipeClientService
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RecipeClientService(IHttpClientFactory httpClientFactory)
+        public RecipeClientService(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClientFactory.CreateClient("RecipeApi");
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        private void AttachAuthToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.User.FindFirst("JWToken")?.Value;
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
         }
 
         public async Task<List<RecipeDTO>> GetAllRecipesAsync()
@@ -48,7 +62,8 @@ namespace RecipeShare.Mvc.Services
 
         public async Task<bool> CreateRecipeAsync(RecipeDTO recipeDTO)
         {
-            var response = await _httpClient.PostAsJsonAsync("Recipe", recipeDTO); // API'ye POST isteği gönder
+            AttachAuthToken();
+            var response = await _httpClient.PostAsJsonAsync("Recipe", recipeDTO);
             if (!response.IsSuccessStatusCode)
             {
                 Debug.WriteLine($"API Hatası: {response.StatusCode}");
@@ -59,7 +74,8 @@ namespace RecipeShare.Mvc.Services
 
         public async Task<bool> UpdateAsync(RecipeDTO recipeDTO)
         {
-            var response = await _httpClient.PutAsJsonAsync("Recipe", recipeDTO); // API'ye PUT isteği gönder
+            AttachAuthToken();
+            var response = await _httpClient.PutAsJsonAsync("Recipe", recipeDTO);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -71,7 +87,8 @@ namespace RecipeShare.Mvc.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"Recipe/{id}"); // API'ye DELETE isteği gönder
+            AttachAuthToken();
+            var response = await _httpClient.DeleteAsync($"Recipe/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return false;

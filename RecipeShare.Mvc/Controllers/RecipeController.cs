@@ -34,7 +34,7 @@ namespace RecipeShare.Mvc.Controllers
                 Content = dto.Content,
                 CreatedDate = dto.CreatedDate,
                 AuthorName = dto.Username ?? "Bilinmeyen Yazar",
-                ImageUrl = string.IsNullOrEmpty(dto.ImageUrl) ? "/images/default-recipe.jpg" : dto.ImageUrl
+                ImageUrl = string.IsNullOrEmpty(dto.ImageUrl) ? "/uploads/recipes/default-recipe.jpg" : dto.ImageUrl
             };
 
             return View(model);
@@ -64,7 +64,7 @@ namespace RecipeShare.Mvc.Controllers
             }
             else
             {
-                recipeDTO.ImageUrl = "/images/default-recipe.jpg";
+                recipeDTO.ImageUrl = "/uploads/recipes/default-recipe.jpg";
             }
 
             bool isSuccess = await _recipeClientService.CreateRecipeAsync(recipeDTO);
@@ -163,30 +163,37 @@ namespace RecipeShare.Mvc.Controllers
         }
         private async Task<string> UploadImageAsync(IFormFile imageFile)
         {
-            if (string.IsNullOrEmpty(_webHostEnvironment.WebRootPath))
+            try
             {
-                return "/images/default-recipe.jpg";
+                if (string.IsNullOrEmpty(_webHostEnvironment.WebRootPath))
+                {
+                    return "/uploads/recipes/default-recipe.jpg";
+                }
+
+                // Dosya adını benzersiz yap
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+
+                // Klasör: wwwroot/uploads/recipes
+                string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "recipes");
+
+                if (!Directory.Exists(uploadDir))
+                {
+                    Directory.CreateDirectory(uploadDir);
+                }
+
+                string filePath = Path.Combine(uploadDir, fileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                }
+
+                return "/uploads/recipes/" + fileName;
             }
-
-            // Dosya adını benzersiz yap
-            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-
-            // Klasör: wwwroot/uploads/recipes
-            string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "recipes");
-
-            if (!Directory.Exists(uploadDir))
+            catch (Exception)
             {
-                Directory.CreateDirectory(uploadDir);
+                return "/uploads/recipes/default-recipe.jpg";
             }
-
-            string filePath = Path.Combine(uploadDir, fileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await imageFile.CopyToAsync(fileStream);
-            }
-
-            return "/uploads/recipes/" + fileName;
         }
     }
 }

@@ -18,10 +18,11 @@
             </nav>
 
             <div class="position-relative mb-5">
-                <img src="https://picsum.photos/seed/@Model.Id/1200/600"
+                <img src="@Model.ImageUrl"
                      class="img-fluid rounded-4 shadow-sm w-100 border border-white border-4"
                      alt="@Model.Title"
-                     style="object-fit: cover; max-height: 480px;">
+                     style="object-fit: cover; max-height: 480px;"
+                     onerror="this.src='/uploads/recipes/default-recipe.jpg'">
                 
                 <div class="position-absolute top-0 start-0 m-4">
                     <span class="badge bg-success shadow-sm px-3 py-2 rounded-pill">
