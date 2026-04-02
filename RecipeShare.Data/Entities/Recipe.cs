@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace RecipeShare.Data.Entities
@@ -16,7 +17,7 @@ namespace RecipeShare.Data.Entities
         public DateTime CreatedDate { get; set; }
         public string? ImageUrl { get; set; }
 
-        public int UserId { get; set; }
+        public int UserId { get; set; }       
         public User User { get; set; }
 
         public ICollection<Comment> Comment { get; set; } = new HashSet<Comment>();

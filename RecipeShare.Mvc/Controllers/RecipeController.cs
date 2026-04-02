@@ -51,25 +51,26 @@ namespace RecipeShare.Mvc.Controllers
         [Authorize]
         [DisableRequestSizeLimit]
         [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
-        public async Task<IActionResult> Create(RecipeDTO recipeDTO)
+        public async Task<IActionResult> Create(RecipeDTO recipeDTO, IFormFile imageFile)
         {
             recipeDTO.UserId = GetLoggedInUserId();
+
+            ModelState.Remove(nameof(RecipeDTO.ImageUrl)); // ImageUrl doğrulamasını kaldır
+            
 
             if (!ModelState.IsValid)
             {
                 return View(recipeDTO);
             }
 
-            if (recipeDTO.ImageFile != null && recipeDTO.ImageFile.Length > 0)
+            if (imageFile != null && imageFile.Length > 0)
             {
-                recipeDTO.ImageUrl = await UploadImageAsync(recipeDTO.ImageFile);
+                recipeDTO.ImageUrl = await UploadImageAsync(imageFile);
             }
             else
             {
                 recipeDTO.ImageUrl = "/uploads/recipes/default-recipe.jpg";
-            }
-
-            recipeDTO.ImageFile = null;
+            }           
 
             try
             {
@@ -112,15 +113,16 @@ namespace RecipeShare.Mvc.Controllers
         [Authorize]
         [DisableRequestSizeLimit]
         [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
-        public async Task<IActionResult> Edit(RecipeDTO recipeDTO)
+        public async Task<IActionResult> Edit(RecipeDTO recipeDTO, IFormFile imageFile)
         {
 
             recipeDTO.UserId = GetLoggedInUserId();
-            if (recipeDTO.ImageFile != null && recipeDTO.ImageFile.Length > 0)
+            ModelState.Remove(nameof(RecipeDTO.ImageUrl)); // ImageUrl doğrulamasını kaldır
+
+            if (imageFile != null && imageFile.Length > 0)
             {
-                recipeDTO.ImageUrl = await UploadImageAsync(recipeDTO.ImageFile);
+                recipeDTO.ImageUrl = await UploadImageAsync(imageFile);
             }
-            recipeDTO.ImageFile = null;
             if (!ModelState.IsValid)
             {
                 return View(recipeDTO);

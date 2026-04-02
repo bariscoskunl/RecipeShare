@@ -7,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 var httpClientBuilder = builder.Services.AddHttpClient("RecipeApi", client => {
+    
     client.BaseAddress = new Uri("https://localhost:7190/api/");
+   
     client.DefaultRequestHeaders.Add("Accept", "application/json");
     client.Timeout = TimeSpan.FromSeconds(30);
 }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
