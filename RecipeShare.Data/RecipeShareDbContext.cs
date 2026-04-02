@@ -43,11 +43,11 @@ namespace RecipeShare.Data
             // 3. Tarifler
             List<Recipe> recipes = new()
             {
-                 new Recipe { Id = 1, Title = "Sahanda Yumurta", Content = "...", CreatedDate = DateTime.Now.AddDays(-5), UserId = 1, ImageUrl = "/images/default-recipe.jpg" },
-                 new Recipe { Id = 2, Title = "Mercimek Çorbası", Content = "...", CreatedDate = DateTime.Now.AddDays(-4), UserId = 2, ImageUrl = "/images/default-recipe.jpg" },
-                 new Recipe { Id = 3, Title = "İtalyan Usulü Pizza", Content = "...", CreatedDate = DateTime.Now.AddDays(-3), UserId = 3, ImageUrl = "/images/default-recipe.jpg" },
-                 new Recipe { Id = 4, Title = "Ev Yapımı Burger", Content = "...", CreatedDate = DateTime.Now.AddDays(-2), UserId = 1, ImageUrl = "/images/default-recipe.jpg" },
-                 new Recipe { Id = 5, Title = "Zeytinyağlı Enginar", Content = "...", CreatedDate = DateTime.Now.AddDays(-1), UserId = 4, ImageUrl = "/images/default-recipe.jpg" }
+                 new Recipe { Id = 1, Title = "Sahanda Yumurta", Content = "Tereyağını sahanda eritip köpürmesini bekleyin. Yumurtaları sarılarını bozmadan kırın, üzerine bir tutam tuz ve pul biber ekleyerek beyazları tamamen pişene kadar orta ateşte tutun.", CreatedDate = DateTime.Now.AddDays(-5), UserId = 1, ImageUrl = "/images/default-recipe.jpg" },
+                 new Recipe { Id = 2, Title = "Mercimek Çorbası", Content = "Soğan, havuç ve patatesi kavurduktan sonra yıkanmış kırmızı mercimeği ekleyin. Sıcak su ilavesiyle mercimekler yumuşayana kadar haşlayıp blenderdan geçirin. Üzerine kızgın tereyağlı sos dökün.", CreatedDate = DateTime.Now.AddDays(-4), UserId = 2, ImageUrl = "/images/default-recipe.jpg" },
+                 new Recipe { Id = 3, Title = "İtalyan Usulü Pizza", Content = "İnce açılmış hamurun üzerine taze fesleğenli domates sosu ve bol mozarella peyniri yayın. Tercihen taş fırında veya 250 derece ısıtılmış fırında kenarları çıtırlaşana kadar yaklaşık 10 dakika pişirin.", CreatedDate = DateTime.Now.AddDays(-3), UserId = 3, ImageUrl = "/images/default-recipe.jpg" },
+                 new Recipe { Id = 4, Title = "Ev Yapımı Burger", Content = "Dinlendirilmiş dana kıymadan hazırlanan kalın köfteleri döküm tavada mühürleyin. Karamelize soğan, cheddar peyniri ve özel burger sosu ile ısıtılmış brioche ekmeği arasında servis yapın.", CreatedDate = DateTime.Now.AddDays(-2), UserId = 1, ImageUrl = "/images/default-recipe.jpg" },
+                 new Recipe { Id = 5, Title = "Zeytinyağlı Enginar", Content = "Garnitür karışımını (bezelye, havuç, patates) limonlu suda bekletilmiş enginarların ortasına yerleştirin. Bol sızma zeytinyağı, bir tutam şeker ve portakal suyu ekleyerek kısık ateşte yumuşayana kadar pişirin.", CreatedDate = DateTime.Now.AddDays(-1), UserId = 4, ImageUrl = "/images/default-recipe.jpg" }
             };
 
             // 4. Yorumlar

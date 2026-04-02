@@ -13,6 +13,7 @@ builder.Services.AddHttpClient("RecipeApi", client =>
 });
 
 builder.Services.AddScoped<RecipeClientService>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

@@ -34,14 +34,14 @@ namespace RecipeShare.Mvc.Controllers
                 Content = dto.Content,
                 CreatedDate = dto.CreatedDate,
                 AuthorName = dto.Username ?? "Bilinmeyen Yazar",
-                ImageUrl = string.IsNullOrEmpty(dto.ImageUrl) ? "/images/default-recipe.jpg" : dto.ImageUrl
+                ImageUrl = string.IsNullOrEmpty(dto.ImageUrl) ? "/uploads/recipes/default-recipe.jpg" : dto.ImageUrl
             };
 
             return View(model);
         }
-      
+
         [HttpGet]
-        [Authorize]
+        [Authorize]        
         public IActionResult Create()
         {
             return View();
@@ -49,6 +49,8 @@ namespace RecipeShare.Mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [DisableRequestSizeLimit]
+        [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
         public async Task<IActionResult> Create(RecipeDTO recipeDTO)
         {
             recipeDTO.UserId = GetLoggedInUserId();
@@ -64,20 +66,25 @@ namespace RecipeShare.Mvc.Controllers
             }
             else
             {
-                recipeDTO.ImageUrl = "/images/default-recipe.jpg";
+                recipeDTO.ImageUrl = "/uploads/recipes/default-recipe.jpg";
             }
-            
-            bool isSuccess = await _recipeClientService.CreateRecipeAsync(recipeDTO);
 
-            if (isSuccess)
+            recipeDTO.ImageFile = null;
+
+            try
             {
-                return RedirectToAction("Index", "Home");
+                bool isSuccess = await _recipeClientService.CreateRecipeAsync(recipeDTO);
+
+                if (isSuccess)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
-            else
+            catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, "Tarif eklenirken API ile iletişim kurulamadı.");
-                return View(recipeDTO);
+                ModelState.AddModelError(string.Empty, "Tarif eklenirken bir hata oluştu. Lütfen tekrar deneyin.");
             }
+            return View(recipeDTO);
         }
 
         [HttpGet]
@@ -99,19 +106,23 @@ namespace RecipeShare.Mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [DisableRequestSizeLimit]
+        [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
         public async Task<IActionResult> Edit(RecipeDTO recipeDTO)
         {
-           
+
             recipeDTO.UserId = GetLoggedInUserId();
             if (recipeDTO.ImageFile != null && recipeDTO.ImageFile.Length > 0)
             {
                 recipeDTO.ImageUrl = await UploadImageAsync(recipeDTO.ImageFile);
             }
+            recipeDTO.ImageFile = null;
             if (!ModelState.IsValid)
             {
                 return View(recipeDTO);
             }
             bool isSuccess = await _recipeClientService.UpdateAsync(recipeDTO);
+
             if (isSuccess)
             {
                 return RedirectToAction("Details", new { id = recipeDTO.Id });
@@ -125,7 +136,7 @@ namespace RecipeShare.Mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken] 
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var dto = await _recipeClientService.GetRecipeByIdAsync(id);
@@ -141,7 +152,7 @@ namespace RecipeShare.Mvc.Controllers
             bool isSuccess = await _recipeClientService.DeleteAsync(id);
 
             if (isSuccess)
-            {               
+            {
                 TempData["SuccessMessage"] = "Tarif başarıyla silindi.";
             }
             else
@@ -156,37 +167,47 @@ namespace RecipeShare.Mvc.Controllers
             // Kimlik kartındaki (Claims) NameIdentifier alanını bul
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
-            { 
+            {
                 return userId;
             }
             return 0;// Hala 0 geliyorsa giriş yapılmamış veya Claim okunmamış demektir
         }
         private async Task<string> UploadImageAsync(IFormFile imageFile)
         {
-            if (string.IsNullOrEmpty(_webHostEnvironment.WebRootPath))
+            try
+            {               
+                // Dosya adını benzersiz yap
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+
+                if (string.IsNullOrEmpty(_webHostEnvironment.WebRootPath))
+                {
+                    return "/uploads/recipes/default-recipe.jpg";
+                }
+
+                // Klasör: wwwroot/uploads/recipes
+                string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "recipes");
+
+                if (!Directory.Exists(uploadDir))
+                {
+                    Directory.CreateDirectory(uploadDir);
+                }               
+
+                string filePath = Path.Combine(uploadDir, fileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                }
+
+                return "/uploads/recipes/" + fileName;
+
+            }
+            catch (Exception)
             {
-                return "/images/default-recipe.jpg";
+                return "/uploads/recipes/default-recipe.jpg";
+
             }
 
-            // Dosya adını benzersiz yap
-            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-
-            // Klasör: wwwroot/uploads/recipes
-            string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "recipes");
-
-            if (!Directory.Exists(uploadDir))
-            {
-                Directory.CreateDirectory(uploadDir);
-            }
-
-            string filePath = Path.Combine(uploadDir, fileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await imageFile.CopyToAsync(fileStream);
-            }
-
-            return "/uploads/recipes/" + fileName;
         }
     }
 }

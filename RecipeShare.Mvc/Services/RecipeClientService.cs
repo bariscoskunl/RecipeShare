@@ -6,10 +6,12 @@ namespace RecipeShare.Mvc.Services
     public class RecipeClientService
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RecipeClientService(IHttpClientFactory httpClientFactory)
+        public RecipeClientService(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClientFactory.CreateClient("RecipeApi");
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<RecipeDTO>> GetAllRecipesAsync()
@@ -48,6 +50,7 @@ namespace RecipeShare.Mvc.Services
 
         public async Task<bool> CreateRecipeAsync(RecipeDTO recipeDTO)
         {
+            AttachAuthToken();
             var response = await _httpClient.PostAsJsonAsync("Recipe", recipeDTO); // API'ye POST isteği gönder
             if (!response.IsSuccessStatusCode)
             {
@@ -59,6 +62,7 @@ namespace RecipeShare.Mvc.Services
 
         public async Task<bool> UpdateAsync(RecipeDTO recipeDTO)
         {
+            AttachAuthToken();
             var response = await _httpClient.PutAsJsonAsync("Recipe", recipeDTO); // API'ye PUT isteği gönder
 
             if (!response.IsSuccessStatusCode)
@@ -71,12 +75,22 @@ namespace RecipeShare.Mvc.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
+            AttachAuthToken();
             var response = await _httpClient.DeleteAsync($"Recipe/{id}"); // API'ye DELETE isteği gönder
             if (!response.IsSuccessStatusCode)
             {
                 return false;
             }
             return true;
+        }
+
+        private void AttachAuthToken()
+        { 
+            var token = _httpContextAccessor.HttpContext?.User.FindFirst("JWToken")?.Value;
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
         }
     }
 }

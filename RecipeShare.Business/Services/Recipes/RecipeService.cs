@@ -73,7 +73,7 @@ namespace RecipeShare.Business.Services.Recipes
                 Content = recipe.Content,
                 CreatedDate = DateTime.Now,
                 UserId = recipe.UserId,
-                ImageUrl = recipe.ImageUrl ?? "/images/default-recipe.jpg"
+                ImageUrl = recipe.ImageUrl ?? "/uploads/recipes/default-recipe.jpg"
             };
             await _recipeRepository.CreateRecipe(newRecipe);
         }
