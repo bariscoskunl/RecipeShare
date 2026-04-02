@@ -28,6 +28,7 @@ namespace RecipeShare.DataApi.Controllers
         }
         // GET: api/Recipe/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {            
             var recipe = await _recipeService.GetRecipeByIdAsync(id);
@@ -41,7 +42,8 @@ namespace RecipeShare.DataApi.Controllers
         }
 
         // GET: api/Recipe/user/5     
-        [HttpGet("user/{userId}")]       
+        [HttpGet("user/{userId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByUserId(int userId)
         {
             var recipes = await _recipeService.GetRecipesByUserIdAsync(userId);

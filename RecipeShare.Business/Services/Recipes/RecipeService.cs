@@ -86,7 +86,7 @@ namespace RecipeShare.Business.Services.Recipes
                 existingRecipe.Title = recipe.Title;
                 existingRecipe.Content = recipe.Content;
                 existingRecipe.UserId = recipe.UserId;
-                existingRecipe.ImageUrl = recipe.ImageUrl;
+                existingRecipe.ImageUrl = recipe.ImageUrl ?? existingRecipe.ImageUrl;
 
                 await _recipeRepository.UpdateRecipe(existingRecipe);
 
