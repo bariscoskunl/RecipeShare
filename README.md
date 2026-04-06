@@ -1,71 +1,100 @@
-Haklısın Barış, veritabanı kurulumu ve güncellenmesi bir geliştirici için en önemli adımlardan biri. Migration süreçlerini de içeren, girintileri ve hiyerarşisi düzeltilmiş tam README.md içeriği aşağıdadır.
+# 🥘 RecipeShare - Lezzet Paylaşım Platformu
 
-Bunu doğrudan projenin ana dizinine yapıştırabilirsin:
+RecipeShare, yemek tutkunlarının tariflerini paylaşabileceği, diğer kullanıcıların tariflerini inceleyip yorum yapabileceği modern bir platformdur.  
 
-🥘 RecipeShare - Lezzet Paylaşım Platformu
-RecipeShare, yemek tutkunlarının tariflerini paylaşabileceği, diğer kullanıcıların tariflerini inceleyip yorum yapabileceği modern bir platformdur. Proje, ASP.NET Core Web API ve MVC mimarisi kullanılarak "Loosely Coupled" (Gevşek Bağlı) prensibiyle geliştirilmektedir.
+Proje, ASP.NET Core Web API ve MVC mimarisi kullanılarak **"Loosely Coupled" (Gevşek Bağlı)** prensibiyle geliştirilmektedir.
 
-[!IMPORTANT]
-🚧 Geliştirme Aşamasında: Bu proje şu anda aktif olarak geliştirilmektedir. Yeni özellikler eklenmeye ve mimari iyileştirmeler yapılmaya devam etmektedir.
+---
 
-🛠️ Kullanılan Teknolojiler
-Backend: .NET 8 (C#)
+> [!IMPORTANT]
+> 🚧 **Geliştirme Aşamasında:**  
+> Bu proje şu anda aktif olarak geliştirilmektedir. Yeni özellikler eklenmeye ve mimari iyileştirmeler yapılmaya devam etmektedir.
 
-Mimari: N-Tier Architecture (API + MVC UI)
+---
 
-Veritabanı & ORM: Entity Framework Core, SQL Server
+## 🛠️ Kullanılan Teknolojiler
 
-Frontend: Bootstrap 5, JavaScript (AJAX / Fetch API)
+| Alan        | Teknoloji |
+|------------|----------|
+| Backend    | .NET 8 (C#) |
+| Mimari     | N-Tier Architecture (API + MVC UI) |
+| Veritabanı & ORM | SQL Server, Entity Framework Core |
+| Frontend   | Bootstrap 5, JavaScript (AJAX / Fetch API) |
+| Güvenlik   | JWT (JSON Web Token) & Role-based Authorization |
 
-Güvenlik: JWT (JSON Web Token) & Role-based Authorization
+---
 
-✅ Tamamlanan Özellikler
-Veritabanı Modelleme: Tarif, Yorum ve Kullanıcı tabloları arasındaki ilişkiler kuruldu.
+## ✅ Tamamlanan Özellikler
 
-Web API: Tüm CRUD (Oluştur, Oku, Güncelle, Sil) işlemleri için endpoint'ler hazırlandı.
+- **Veritabanı Tasarımı:** Tarif, yorum ve kullanıcı tabloları arasındaki ilişkiler kuruldu.  
+- **Web API:** Tüm CRUD işlemleri için sağlam endpoint'ler hazırlandı.  
+- **Dinamik Yorum Sistemi:**
+  - AJAX (Fetch API) ile sayfa yenilenmeden yorum ekleme, silme ve düzenleme  
+- **Yetkilendirme:**
+  - Admin tüm yorumları yönetebilir  
+  - Kullanıcılar sadece kendi yorumlarını düzenleyebilir  
+- **Responsive UI:** Tüm cihazlarla uyumlu arayüz  
 
-Yorum Sistemi: * AJAX (Fetch API) ile sayfa yenilenmeden yorum ekleme, silme ve düzenleme.
+---
 
-Rol tabanlı yetkilendirme (Admin siler, sahip düzenler).
+## 🏗️ Veritabanı ve Migration Süreçleri
 
-Modern UI: Responsive tarif detay sayfası ve admin yönetim tabloları.
+Proje, EF Core **Code-First** yaklaşımını kullanmaktadır.
 
-🏗️ Veritabanı ve Migration Süreçleri
-Proje Entity Framework Core "Code-First" yaklaşımını kullanmaktadır. Veritabanını ayağa kaldırmak için aşağıdaki adımları izleyin:
-
-Migration Oluşturma:
-
-Bash
+### Migration oluşturma:
+```bash
 dotnet ef migrations add InitialCreate --project RecipeShare.Data --startup-project RecipeShare.DataApi
-Veritabanını Güncelleme (Tabloları Oluşturma):
+```
 
-Bash
+### Veritabanını güncelleme:
+```bash
 dotnet ef database update --project RecipeShare.Data --startup-project RecipeShare.DataApi
-Not: Migration komutlarını çalıştırırken ana dizinde olduğunuzdan ve ConnectionStrings bilgilerinin appsettings.json içinde doğru tanımlandığından emin olun.
+```
 
-🚀 Planlanan Özellikler (Roadmap)
-[ ] Görsel Yükleme: Tarifler için dinamik resim yükleme ve klasörleme sistemi.
+> ⚠️ Not:  
+> - Komutları ana dizinde çalıştırdığınızdan emin olun  
+> - `appsettings.json` içindeki connection string doğru olmalı  
 
-[ ] Arama & Filtreleme: Kategori ve malzemeye göre gelişmiş arama.
+---
 
-[ ] Favoriler: Beğenilen tarifleri listeye ekleme özelliği.
+## 🚀 Planlanan Özellikler (Roadmap)
 
-[ ] Profil Sayfası: Kullanıcının kendi tariflerini yönetebileceği alan.
+- [ ] Görsel Yükleme (Tarif resimleri)
+- [ ] Arama & Filtreleme (Kategori + malzeme)
+- [ ] Favoriler sistemi
+- [ ] Kullanıcı profil sayfası
 
-📦 Kurulum ve Çalıştırma
-Depoyu klonlayın: git clone https://github.com/bariscoskunl/RecipeShare.git
+---
 
-appsettings.json içindeki SQL bağlantı dizesini güncelleyin.
+## 📦 Kurulum ve Çalıştırma
 
-Yukarıdaki Migration komutları ile veritabanını oluşturun.
+### 1. Depoyu klonlayın
+```bash
+git clone https://github.com/bariscoskunl/RecipeShare.git
+```
 
-Önce API projesini, ardından MVC projesini başlatın.
+### 2. Veritabanı ayarını yapın
+`appsettings.json` içindeki connection string'i güncelleyin
 
-📬 İletişim
-Herhangi bir sorunuz, öneriniz veya iş birliği fırsatınız varsa benimle iletişime geçebilirsiniz.
+### 3. Migration çalıştırın
+(Yukarıdaki komutlar)
 
-Email: bariscoskun441@gmail.com
+### 4. Projeyi başlatın
+- Önce API
+- Sonra MVC
 
-GitHub: github.com/bariscoskunl
+---
 
-LinkedIn: linkedin.com/in/bariscoskun441
+## 📬 İletişim
+
+Herhangi bir sorunuz, öneriniz veya iş birliği fırsatınız varsa:
+
+- 📧 Email: bariscoskun441@gmail.com  
+- 💻 GitHub: https://github.com/bariscoskunl  
+- 🔗 LinkedIn: https://linkedin.com/in/bariscoskun441  
+
+---
+
+## 👨‍💻 Geliştirici
+
+Bu proje **Barış Coşkun** tarafından tutkuyla geliştirilmektedir.
