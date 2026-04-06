@@ -64,9 +64,14 @@
                 </a>
 
                 <div class="d-flex gap-2">
+                 
                     @* GÜVENLİK: Name kontrolü *@
                     @if (User.Identity?.IsAuthenticated == true && User.Identity.Name == Model.AuthorName)
                     {
+                         <form asp-controller="Recipe" asp-action="Delete" asp-route-id="@Model.Id" method="post"
+                         onsubmit="return confirm('Bu tarifi silmek istediğinize emin misiniz?');">
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 transition-hover fw-bold text-dark"><i class="fas fa-edit me-2"></i>Sil</button>
+                         </form>
                         <a asp-controller="Recipe" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning rounded-pill px-4 py-2 transition-hover fw-bold text-dark">
                             <i class="fas fa-edit me-2"></i>Düzenle
                         </a>

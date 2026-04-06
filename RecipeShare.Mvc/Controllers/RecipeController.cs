@@ -41,7 +41,7 @@ namespace RecipeShare.Mvc.Controllers
         }
 
         [HttpGet]
-        [Authorize]        
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -56,7 +56,7 @@ namespace RecipeShare.Mvc.Controllers
             recipeDTO.UserId = GetLoggedInUserId();
 
             ModelState.Remove(nameof(RecipeDTO.ImageUrl)); // ImageUrl doğrulamasını kaldır
-            
+
 
             if (!ModelState.IsValid)
             {
@@ -70,7 +70,7 @@ namespace RecipeShare.Mvc.Controllers
             else
             {
                 recipeDTO.ImageUrl = "/uploads/recipes/default-recipe.jpg";
-            }           
+            }
 
             try
             {
@@ -159,11 +159,31 @@ namespace RecipeShare.Mvc.Controllers
 
             if (isSuccess)
             {
-                TempData["SuccessMessage"] = "Tarif başarıyla silindi.";
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Tarif silinirken bir hata oluştu.";
+                if (!string.IsNullOrEmpty(dto.ImageUrl) && !dto.ImageUrl.Contains("default-recipe.jpg"))
+                {
+                    try
+                    {
+                        string fileName = dto.ImageUrl.TrimStart('/');
+                        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, fileName);
+
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        {
+
+                        }
+                    }
+                    TempData["SuccessMessage"] = "Tarif ve görsel başarıyla silindi.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Tarif silinirken bir hata oluştu.";
+                }              
             }
 
             return RedirectToAction("Index", "Home");
@@ -181,7 +201,7 @@ namespace RecipeShare.Mvc.Controllers
         private async Task<string> UploadImageAsync(IFormFile imageFile)
         {
             try
-            {               
+            {
                 // Dosya adını benzersiz yap
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
 
@@ -196,7 +216,7 @@ namespace RecipeShare.Mvc.Controllers
                 if (!Directory.Exists(uploadDir))
                 {
                     Directory.CreateDirectory(uploadDir);
-                }               
+                }
 
                 string filePath = Path.Combine(uploadDir, fileName);
 
