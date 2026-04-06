@@ -64,11 +64,11 @@ namespace RecipeShare.DataApi.Controllers
             var existingComment = await _commentService.GetCommentByIdAsync(id);
             if (existingComment == null)
             {
-                return NotFound($"Güncellenmek istenen Id'si {id} olan yorum bulunamadı.");
+                return NotFound("Yorum bulunamadı.");
             }
 
             await _commentService.UpdateCommentAsync(id, commentDTO);
-            return Ok("Yorum başarıyla güncellendi.");
+            return NoContent();
         }
 
         // DELETE: api/Comment/5
@@ -78,11 +78,11 @@ namespace RecipeShare.DataApi.Controllers
             var existingComment = await _commentService.GetCommentByIdAsync(id);
             if (existingComment == null)
             {
-                return NotFound($"Silinmek istenen Id'si {id} olan yorum bulunamadı.");
+                return NotFound("Silinecek yorum bulunamadı.");
             }
 
             await _commentService.DeleteCommentAsync(id);
-            return Ok("Yorum başarıyla silindi.");
+            return NoContent();
         }
     }
 }

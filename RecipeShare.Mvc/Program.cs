@@ -6,18 +6,26 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"];
+
 var httpClientBuilder = builder.Services.AddHttpClient("RecipeApi", client => {
     
-    client.BaseAddress = new Uri("https://localhost:7190/api/");
+    client.BaseAddress = new Uri(apiBaseUrl);
    
     client.DefaultRequestHeaders.Add("Accept", "application/json");
     client.Timeout = TimeSpan.FromSeconds(30);
-}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+}).ConfigurePrimaryHttpMessageHandler(() => 
    {
-       ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+       var handler = new HttpClientHandler();
+       if (builder.Environment.IsDevelopment())
+       { 
+           handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+       }
+       return handler;
    });
 
 builder.Services.AddScoped<RecipeClientService>();
+builder.Services.AddScoped<CommentClientService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

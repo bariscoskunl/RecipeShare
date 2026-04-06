@@ -1,4 +1,6 @@
-﻿namespace RecipeShare.Mvc.Models
+﻿using RecipeShare.Business.DTOs;
+
+namespace RecipeShare.Mvc.Models
 {
     public class RecipeViewModel
     {
@@ -11,6 +13,8 @@
         public string? ImageUrl { get; set; }
 
         public IFormFile? ImageFile { get; set; }
+
+        public List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
 
         // --- Detay İçin Eklenen "Akıllı" Özellikler ---
 

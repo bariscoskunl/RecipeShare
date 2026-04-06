@@ -11,21 +11,22 @@ namespace RecipeShare.Mvc.Controllers
     {
         private readonly RecipeClientService _recipeClientService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly CommentClientService _commentClientService;
 
-        public RecipeController(RecipeClientService recipeClientService, IWebHostEnvironment webHostEnvironment)
+        public RecipeController(RecipeClientService recipeClientService, IWebHostEnvironment webHostEnvironment, CommentClientService commentClientService)
         {
             _recipeClientService = recipeClientService;
             _webHostEnvironment = webHostEnvironment;
+            _commentClientService = commentClientService;
         }
 
         public async Task<IActionResult> Details(int id)
         {
             var dto = await _recipeClientService.GetRecipeByIdAsync(id);
+            if (dto == null) return NotFound();
 
-            if (dto == null)
-            {
-                return NotFound();
-            }
+           
+            var commentDtos = await _commentClientService.GetCommentsByRecipeIdAsync(id);
 
             var model = new RecipeViewModel
             {
@@ -33,8 +34,19 @@ namespace RecipeShare.Mvc.Controllers
                 Title = dto.Title,
                 Content = dto.Content,
                 CreatedDate = dto.CreatedDate,
-                AuthorName = dto.Username ?? "Bilinmeyen Yazar",
-                ImageUrl = string.IsNullOrEmpty(dto.ImageUrl) ? "/uploads/recipes/default-recipe.jpg" : dto.ImageUrl
+                AuthorName = dto.Username,
+                ImageUrl = dto.ImageUrl,
+              
+                Comments = commentDtos.Select(c => new CommentViewModel
+                {
+                    Id = c.Id,
+                    Text = c.Text,
+                    CreatedDate = c.CreatedDate,
+                    UserId = c.UserId,
+                    // EĞER API'den isim gelmiyorsa şimdilik UserId'yi göster
+                    // İleride API'yi güncelleyip UserName göndermesini sağla
+                    UserName = "Kullanıcı #" + c.UserId
+                }).ToList()
             };
 
             return View(model);

@@ -7,7 +7,7 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
-            
+
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb bg-transparent p-0 m-0">
                     <li class="breadcrumb-item">
@@ -18,13 +18,12 @@
             </nav>
 
             <div class="position-relative mb-5">
-                @* DÜZELTİLEN RESİM ETİKETİ *@
-                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/recipe_share.jpg" : Model.ImageUrl)" 
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/recipe_share.jpg" : Model.ImageUrl)"
                      class="img-fluid rounded-4 shadow-sm w-100 border border-white border-4"
                      alt="@Model.Title"
                      style="object-fit: cover; max-height: 480px;"
                      onerror="this.src='/images/recipe_share.jpg'">
-                
+
                 <div class="position-absolute top-0 start-0 m-4">
                     <span class="badge bg-success shadow-sm px-3 py-2 rounded-pill">
                         <i class="fas fa-utensils me-1"></i> Lezzet Köşesi
@@ -34,7 +33,7 @@
 
             <div class="text-center mb-5">
                 <h1 class="display-4 fw-bold text-dark mb-4">@Model.Title</h1>
-                
+
                 <div class="d-flex justify-content-center align-items-center text-muted gap-4 border-top border-bottom py-3 bg-white rounded-pill shadow-sm px-4">
                     <div class="d-flex align-items-center">
                         <div class="avatar-sm bg-success-subtle text-success me-2">
@@ -42,8 +41,8 @@
                         </div>
                         <span class="fw-bold text-dark">@Model.AuthorName</span>
                     </div>
-                    
-                    <div class="vr text-muted opacity-25"></div> 
+
+                    <div class="vr text-muted opacity-25"></div>
                     <div class="d-flex align-items-center">
                         <i class="far fa-calendar-alt me-2 text-success"></i>
                         <span>@Model.FormattedDate</span>
@@ -58,20 +57,20 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center border-top pt-4 mt-4">
+            <div class="d-flex justify-content-between align-items-center border-top pt-4 mt-4 mb-5">
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 transition-hover">
                     <i class="fas fa-arrow-left me-2"></i>Geri Dön
                 </a>
 
                 <div class="d-flex gap-2">
-                 
-                    @* GÜVENLİK: Name kontrolü *@
                     @if (User.Identity?.IsAuthenticated == true && User.Identity.Name == Model.AuthorName)
                     {
-                         <form asp-controller="Recipe" asp-action="Delete" asp-route-id="@Model.Id" method="post"
-                         onsubmit="return confirm('Bu tarifi silmek istediğinize emin misiniz?');">
-                        <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 transition-hover fw-bold text-dark"><i class="fas fa-edit me-2"></i>Sil</button>
-                         </form>
+                        <form asp-controller="Recipe" asp-action="Delete" asp-route-id="@Model.Id" method="post"
+                              onsubmit="return confirm('Bu tarifi silmek istediğinize emin misiniz?');">
+                            <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 transition-hover fw-bold text-white">
+                                <i class="fas fa-trash me-2"></i>Sil
+                            </button>
+                        </form>
                         <a asp-controller="Recipe" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning rounded-pill px-4 py-2 transition-hover fw-bold text-dark">
                             <i class="fas fa-edit me-2"></i>Düzenle
                         </a>
@@ -81,6 +80,85 @@
                     </button>
                 </div>
             </div>
+
+            <div class="comments-container pt-4 border-top">
+                <h3 class="fw-bold text-dark mb-4">
+                    <i class="fas fa-comments text-success me-2"></i>Yorumlar (@Model.Comments.Count)
+                </h3>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="add-comment-box bg-light p-4 rounded-4 shadow-sm mb-5">
+                        <h5 class="fw-bold mb-3">Sen ne düşünüyorsun?</h5>
+                        <div class="mb-3">
+                            <textarea id="newCommentText" class="form-control rounded-3 border-0 shadow-sm" rows="3" placeholder="Tarif hakkındaki fikirlerini yaz..."></textarea>
+                        </div>
+                        <button onclick="addComment()" class="btn btn-success rounded-pill px-4 fw-bold">Yorum Gönder</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning rounded-4 shadow-sm py-3 px-4 mb-5 border-0">
+                        <i class="fas fa-info-circle me-2"></i> Yorum yapabilmek için 
+                        <a asp-controller="Account" asp-action="Login" class="fw-bold text-decoration-none">giriş yapmalısın.</a>
+                    </div>
+                }
+
+                <div id="commentList" class="d-flex flex-column gap-3">
+                    @foreach (var comment in Model.Comments.OrderByDescending(x => x.CreatedDate))
+                    {
+                        <div class="comment-item bg-white p-4 rounded-4 shadow-sm border" id="comment-@comment.Id">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar-sm bg-success text-white fw-bold">@comment.UserName[0].ToString().ToUpper()</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0">@comment.UserName</h6>
+                                        <small class="text-muted">@comment.CreatedDate.ToShortDateString()</small>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    @if (User.Identity?.Name == comment.UserName)
+                                    {
+                                        <button onclick="openEditModal(@comment.Id, '@comment.Text')" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                    }
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <button onclick="deleteComment(@comment.Id)" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                            <div class="mt-3 text-dark comment-text-content" style="line-height: 1.6;">
+                                @comment.Text
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editCommentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0">
+                <h5 class="fw-bold">Yorumu Düzenle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="editCommentId" />
+                <textarea id="editCommentText" class="form-control rounded-3 bg-light border-0" rows="4"></textarea>
+            </div>
+            <div class="modal-footer border-0">
+                <button class="btn btn-success rounded-pill px-4" onclick="saveCommentUpdate()">Güncelle</button>
+            </div>
         </div>
     </div>
 </div>
@@ -88,8 +166,8 @@
 <style>
     .recipe-content { font-size: 1.1rem; }
     .avatar-sm {
-        width: 30px; height: 30px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+        width: 35px; height: 35px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
     }
     .bg-success-subtle { background-color: #d1e7dd; }
     .transition-hover { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
@@ -102,6 +180,7 @@
 
 @section Scripts {
     <script>
+        // Paylaş Butonu Fonksiyonu
         document.getElementById('shareButton').addEventListener('click', async () => {
             const shareData = {
                 title: '@Model.Title | RecipeShare',
@@ -109,12 +188,60 @@
                 url: window.location.href
             };
             try {
-                if (navigator.share) { await navigator.share(shareData); } 
+                if (navigator.share) { await navigator.share(shareData); }
                 else {
                     await navigator.clipboard.writeText(window.location.href);
                     alert('Bağlantı kopyalandı!');
                 }
             } catch (err) { console.error('Hata:', err); }
         });
+
+        // Yeni Yorum Ekleme
+        async function addComment() {
+            const text = document.getElementById('newCommentText').value;
+            if (!text.trim()) return alert("Yorum boş olamaz!");
+
+            const response = await fetch('/Comment/Create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recipeId: @Model.Id, text: text })
+            });
+
+            if (response.ok) location.reload();
+            else alert("Yorum gönderilemedi.");
+        }
+
+        // Yorum Silme (Admin)
+        async function deleteComment(id) {
+            if (!confirm("Bu yorumu silmek istediğine emin misin?")) return;
+            const response = await fetch(`/Comment/Delete/${id}`, { method: 'POST' });
+            if (response.ok) {
+                const element = document.getElementById(`comment-${id}`);
+                element.style.opacity = "0";
+                setTimeout(() => element.remove(), 300);
+            }
+        }
+
+        // Edit Modalını Açma
+        function openEditModal(id, text) {
+            document.getElementById('editCommentId').value = id;
+            document.getElementById('editCommentText').value = text;
+            new bootstrap.Modal(document.getElementById('editCommentModal')).show();
+        }
+
+        // Yorum Güncelleme (Modal Kaydet)
+        async function saveCommentUpdate() {
+            const id = document.getElementById('editCommentId').value;
+            const text = document.getElementById('editCommentText').value;
+
+            const response = await fetch('/Comment/Edit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: parseInt(id), text: text, recipeId: @Model.Id })
+            });
+
+            if (response.ok) location.reload();
+            else alert("Güncelleme sırasında bir hata oluştu.");
+        }
     </script>
 }
