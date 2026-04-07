@@ -16,7 +16,7 @@ namespace RecipeShare.Mvc.Controllers
         }
 
         [HttpPost]
-        
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CommentDTO commentDTO)
         {           
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
@@ -42,10 +42,10 @@ namespace RecipeShare.Mvc.Controllers
             return BadRequest("Yorum kaydedilemedi.");
 
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
-            var comment = await _commentClientService.GetCommentsByRecipeIdAsync(id);
+            var comment = await _commentClientService.GetCommentByIdAsync(id);
             if (comment == null)
             {
                 return NotFound();
@@ -54,15 +54,15 @@ namespace RecipeShare.Mvc.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(CommentDTO commentDTO)
+        [Authorize]
+        public async Task<IActionResult> Edit([FromBody] CommentDTO commentDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _commentClientService.UpdateCommentAsync(commentDTO);
+            var result = await _commentClientService.UpdateCommentAsync(commentDTO.Id, commentDTO);
 
             if (result)
             {
@@ -76,8 +76,10 @@ namespace RecipeShare.Mvc.Controllers
         [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> Delete(int id, int recipeId)
         {            
-            var result = await _commentClientService.DeleteCommentAsync(id);           
-            return RedirectToAction("Details", "Recipe", new { id = recipeId });
+            var result = await _commentClientService.DeleteCommentAsync(id);
+            if (result) return Ok();
+
+            return BadRequest();
         }
     }
 }

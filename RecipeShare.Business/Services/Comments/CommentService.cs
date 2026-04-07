@@ -34,6 +34,8 @@ namespace RecipeShare.Business.Services.Comments
                 Id = c.Id,
                 Text = c.Text,
                 UserId = c.UserId,
+                CreatedDate = c.CreatedDate,               
+                Username = c.User != null ? c.User.Username : "Anonim",
                 RecipeId = c.RecipeId
             }).ToList();
         }
@@ -50,7 +52,7 @@ namespace RecipeShare.Business.Services.Comments
                 Id = comment.Id,
                 Text = comment.Text,
                 UserId = comment.UserId,
-                RecipeId = comment.RecipeId
+                RecipeId = comment.RecipeId                
             };
         }
 
@@ -59,8 +61,10 @@ namespace RecipeShare.Business.Services.Comments
             var newComment = new Comment
             {
                 Text = comment.Text,
-                UserId = comment.UserId,
-                RecipeId = comment.RecipeId
+                UserId = comment.UserId ?? 0,
+                RecipeId = comment.RecipeId,
+                CreatedDate = comment.CreatedDate ?? DateTime.Now
+
             };
             await _commentRepository.CreateComment(newComment);
         }
@@ -71,7 +75,8 @@ namespace RecipeShare.Business.Services.Comments
             if (existingComment != null)
             {
                 existingComment.Text = comment.Text;
-                existingComment.UserId = comment.UserId;
+                existingComment.UserId = comment.UserId ?? existingComment.UserId;                
+                existingComment.CreatedDate = comment.CreatedDate ?? existingComment.CreatedDate;
                 existingComment.RecipeId = comment.RecipeId;
 
                 await _commentRepository.UpdateComment(existingComment);

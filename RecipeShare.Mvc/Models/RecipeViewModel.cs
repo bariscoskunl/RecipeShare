@@ -6,7 +6,7 @@ namespace RecipeShare.Mvc.Models
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty; // API'den gelen asıl içerik
+        public string Content { get; set; } = string.Empty; 
         public string AuthorName { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
 

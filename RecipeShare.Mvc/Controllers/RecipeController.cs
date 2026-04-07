@@ -41,11 +41,9 @@ namespace RecipeShare.Mvc.Controllers
                 {
                     Id = c.Id,
                     Text = c.Text,
-                    CreatedDate = c.CreatedDate,
-                    UserId = c.UserId,
-                    // EĞER API'den isim gelmiyorsa şimdilik UserId'yi göster
-                    // İleride API'yi güncelleyip UserName göndermesini sağla
-                    UserName = "Kullanıcı #" + c.UserId
+                    CreatedDate = c.CreatedDate ?? DateTime.Now,
+                    UserId = c.UserId ?? 0,
+                    UserName = c.Username ?? "Ziyaretçi"
                 }).ToList()
             };
 

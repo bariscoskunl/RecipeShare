@@ -34,7 +34,25 @@ namespace RecipeShare.Mvc.Services
                 Debug.WriteLine($"API Hatası ({url}): {ex.Message}");
             }
             return new List<CommentDTO>();
-        }      
+        }
+        public async Task<CommentDTO?> GetCommentByIdAsync(int id)
+        {
+            try
+            {
+                // API'deki "Comment/{id}" endpoint'ine GET isteği atıyoruz
+                var response = await _httpClient.GetAsync($"Comment/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<CommentDTO>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"API Hatası (GetCommentById): {ex.Message}");
+            }
+            return null;
+        }
 
         public async Task<bool> CreateCommentAsync(CommentDTO commentDTO)
         {
@@ -50,7 +68,7 @@ namespace RecipeShare.Mvc.Services
                 return false;
             }
         }
-        public async Task<bool> UpdateCommentAsync(CommentDTO commentDTO)
+        public async Task<bool> UpdateCommentAsync(int id, CommentDTO commentDTO)
         {
             try
             {
