@@ -89,12 +89,5 @@ git clone https://github.com/bariscoskunl/RecipeShare.git
 
 Herhangi bir sorunuz, öneriniz veya iş birliği fırsatınız varsa:
 
-- 📧 Email: bariscoskun441@gmail.com  
-- 💻 GitHub: https://github.com/bariscoskunl  
+- 📧 Email: bariscoskun441@gmail.com 
 - 🔗 LinkedIn: https://linkedin.com/in/bariscoskun441  
-
----
-
-## 👨‍💻 Geliştirici
-
-Bu proje **Barış Coşkun** tarafından tutkuyla geliştirilmektedir.
