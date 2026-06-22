@@ -19,6 +19,7 @@ namespace RecipeShare.Data
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Role> Roles { get; set; }
+  
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
